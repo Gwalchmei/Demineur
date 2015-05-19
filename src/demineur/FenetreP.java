@@ -39,8 +39,6 @@ public class FenetreP extends JFrame implements Observer {
     protected int largeur;
     protected CaseVue tabCasesVue[];
     protected JButton bPlayPause;
-    protected int motif;
-    protected JComboBox cmotif = new JComboBox();
     protected JComboBox ccharge = new JComboBox();
     protected JTextField textVit = new JTextField();
     public FenetreP (Environnement _env)
@@ -51,7 +49,6 @@ public class FenetreP extends JFrame implements Observer {
         longueur = env.tabCases.length;
         largeur = env.tabCases[0].length;
         tabCasesVue = new CaseVue[longueur*largeur];
-        motif = 0;
         build();
         
         addWindowListener(new WindowAdapter(){
@@ -274,17 +271,6 @@ public class FenetreP extends JFrame implements Observer {
         Option.add(brm);
         /* CREATION DES MENUS DEROULANTS */
         
-        
-        
-        
-        cmotif.addItem("Default");
-        cmotif.addItem("Vaisseau");
-        cmotif.addItem("Grenouille");
-        cmotif.addItem("Vaisseau2");
-        cmotif.addActionListener(new ItemAction());
-        
-        Option.add(cmotif);
-        
         ccharge.addItem("canon");
         ccharge.addItem("etoile");
         ccharge.addItem("pulsar");
@@ -338,12 +324,7 @@ public class FenetreP extends JFrame implements Observer {
         add(ensemble);
         
     }
-    class ItemAction implements ActionListener {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changerMotif(cmotif.getSelectedItem());
-            }
-        }
+
     
     class ItemAction2 implements ActionListener {
             @Override
@@ -352,25 +333,6 @@ public class FenetreP extends JFrame implements Observer {
             }
         }
     
-    public void changerMotif(Object c) {
-        String s = (String) c;
-        if(s.equals("Default"))
-        {
-            motif = 0;
-        }
-        if(s.equals("Vaisseau"))
-        {
-            motif = 1;
-        }
-        if(s.equals("Grenouille"))
-        {
-            motif = 2;
-        }
-        if(s.equals("Vaisseau2"))
-        {
-            motif = 3;
-        }
-    }
     @Override
     public void update(Observable o, Object arg) {
         for (int i= 0; i<longueur; i++)
