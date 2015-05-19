@@ -361,8 +361,10 @@ public class FenetreP extends JFrame implements Observer {
                     if (temp.getMined()){
                         tabCasesVue[i*largeur+j].setText("\uD83D\uDCA3");
                     }
-                } if (temp.isFlagged()) {
+                } else if (temp.isFlagged()) {
                     tabCasesVue[i*largeur+j].setText("F");
+                } else {
+                    tabCasesVue[i*largeur+j].setText(" ");
                 }
                 
             }
