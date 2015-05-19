@@ -35,7 +35,7 @@ public class Demineur {
         catch (IllegalAccessException e) {
             // handle exception
         }
-        Environnement env = new Environnement(40,40);
+        Environnement env = new Environnement(20,20);
         FenetreP fen = new FenetreP(env);
         fen.setVisible(true);
         new Thread(env).start();

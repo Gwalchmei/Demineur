@@ -5,6 +5,7 @@
 package demineur;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -24,6 +25,21 @@ public class CaseVue extends JLabel{
     private FenetreP vue;
     
     
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(20,20);
+    }
+    
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension(20, 20);
+    }
+    
+    @Override
+    public Dimension getMaximumSize() {
+        return new Dimension(20, 20);
+    }
+    
     public CaseVue(int _indice, int _largeur, Environnement _env, FenetreP _vue) {
         super();
         
@@ -31,6 +47,7 @@ public class CaseVue extends JLabel{
         setBackground(bgColor);
         setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
         setHorizontalAlignment(SwingConstants.CENTER);
+        
         indice = _indice;
         largeur = _largeur;
         env = _env;

@@ -197,7 +197,7 @@ public class FenetreP extends JFrame implements Observer {
         
         setJMenuBar(jm);
         setTitle("Démineur Roger Thomas");
-        setSize(1920, 1080);
+        setSize(1080, 1080);
         
         
         JPanel ensemble = new JPanel(new BorderLayout());
@@ -332,6 +332,8 @@ public class FenetreP extends JFrame implements Observer {
         
         add(ensemble);
         
+        pack();
+
     }
 
     
@@ -390,6 +392,7 @@ public class FenetreP extends JFrame implements Observer {
         else
         {
             bPlayPause.setText("Pause");
+            lbTimer.setText(Integer.toString(env.getTimer()));
         }
        
     }

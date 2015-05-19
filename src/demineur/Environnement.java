@@ -204,6 +204,10 @@ public class Environnement extends Observable implements Runnable {
         notifyAll();
     }
     
+    public boolean getDemarre() {
+        return demarre;
+    }
+    
     synchronized public void demarrerAlea()
     {
         demarre = true;
