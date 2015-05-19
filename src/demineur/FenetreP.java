@@ -43,14 +43,14 @@ public class FenetreP extends JFrame implements Observer {
     protected JComboBox ccharge = new JComboBox();
     protected JTextField textVit = new JTextField();
     protected JLabel lbTimer = new JLabel();
+    protected JLabel lbNbFlagged = new JLabel();
+    protected JPanel ensemble;
+    protected JComponent pan;
     public FenetreP (Environnement _env)
     {
         super();
         env= _env;
         env.addObserver(this);
-        longueur = env.tabCases.length;
-        largeur = env.tabCases[0].length;
-        tabCasesVue = new CaseVue[longueur*largeur];
         build();
         
         addWindowListener(new WindowAdapter(){
@@ -147,10 +147,6 @@ public class FenetreP extends JFrame implements Observer {
         env.effacer();
     }
     
-    public void lancerLaPartieAlea()
-    {
-        env.demarrerAlea();
-    }
     public void build()
     {
         JMenuBar jm = new JMenuBar();
@@ -200,7 +196,7 @@ public class FenetreP extends JFrame implements Observer {
         setSize(1080, 1080);
         
         
-        JPanel ensemble = new JPanel(new BorderLayout());
+        ensemble = new JPanel(new BorderLayout());
         
         /* CREATION DES BOUTONS */
         JPanel Option = new JPanel(new GridLayout(1,1));
@@ -243,6 +239,11 @@ public class FenetreP extends JFrame implements Observer {
         
         Option.add(lbTimer);
         
+        lbNbFlagged.setText("0");
+        lbNbFlagged.setHorizontalAlignment(SwingConstants.CENTER);
+        lbNbFlagged.setFont(new  Font("Consolas", Font.PLAIN, 36));
+        
+        Option.add(lbNbFlagged);
 //        JButton bcharger = new JButton("Charger");
 //        
 //        bcharger.addMouseListener(new MouseAdapter () {
@@ -312,8 +313,31 @@ public class FenetreP extends JFrame implements Observer {
 //        });
         
 //        Option.add(textVit);
+        initCaseVue();
         
-        JComponent pan = new JPanel (new GridLayout(longueur,largeur));
+        ensemble.add(Option,BorderLayout.CENTER);
+        
+        add(ensemble);
+        
+        pack();
+
+    }
+
+    
+    class ItemAction2 implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            charge(ccharge.getSelectedItem());
+        }
+    }
+    
+    public void initCaseVue()
+    {
+        longueur = env.getLongueur();
+        largeur = env.getLargeur();
+        tabCasesVue = new CaseVue[longueur*largeur];
+        
+        pan = new JPanel (new GridLayout(longueur,largeur));
         Color borderColor = new Color(0x393638);
         Border blackline = BorderFactory.createLineBorder(borderColor, 1);
         
@@ -328,24 +352,17 @@ public class FenetreP extends JFrame implements Observer {
         pan.setBorder(blackline);
         
         ensemble.add(pan,BorderLayout.NORTH);
-        ensemble.add(Option,BorderLayout.CENTER);
         
-        add(ensemble);
-        
-        pack();
-
     }
-
-    
-    class ItemAction2 implements ActionListener {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                charge(ccharge.getSelectedItem());
-            }
-        }
     
     @Override
     public void update(Observable o, Object arg) {
+        boolean flag = false;
+        if (env.getLargeur() != largeur || env.getLongueur() != longueur) {
+            ensemble.remove(pan);
+            initCaseVue();
+            pack();
+        }
         for (int i= 0; i<longueur; i++)
         {
             for (int j = 0; j<largeur; j++)
@@ -362,8 +379,6 @@ public class FenetreP extends JFrame implements Observer {
                     
                 }*/
                 Case temp = env.tabCases[i][j];
-                Color iconColor = new Color(0xEE1700);
-
                 if (temp.isOpen()) {
                     tabCasesVue[i*largeur+j].openedView(temp);
                 } else if (temp.isFlagged()) {
@@ -382,8 +397,9 @@ public class FenetreP extends JFrame implements Observer {
         else
         {
             bPlayPause.setText("Pause");
-            lbTimer.setText(Integer.toString(env.getTimer()));
         }
+        lbTimer.setText(Integer.toString(env.getTimer()));
+        lbNbFlagged.setText(Integer.toString(env.getNbFlagged())+"/"+env.getTotalMine());
        
     }
     

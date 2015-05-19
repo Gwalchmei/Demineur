@@ -32,6 +32,9 @@ public class Environnement extends Observable implements Runnable {
     protected int totalMine;
     protected int largeur;
     protected int longueur;
+    protected int nbOpened;
+    protected int nbFlagged;
+    protected boolean lost;
     
     public Environnement(int x, int y)
     {
@@ -44,7 +47,7 @@ public class Environnement extends Observable implements Runnable {
         longueur = y;
         map = new HashMap(largeur*longueur);
         tabCases = new Case[largeur][longueur];
-        totalMine = largeur*longueur/10;
+        totalMine = largeur*longueur/20;
         int nbMine = 0;
         for (int i = 0; i<largeur; i++)
         {
@@ -68,10 +71,19 @@ public class Environnement extends Observable implements Runnable {
             }
         }
         
-        miseenpause = false;
-        demarre = false; 
+        miseenpause = demarre = lost = false; 
         vitesse = 1000;
-        timer = 0;
+        nbOpened = nbFlagged = timer = 0;
+    }
+    
+    public int getLongueur()
+    {
+        return longueur;
+    }
+    
+    public int getLargeur()
+    {
+        return largeur;
     }
     
     public int getTimer()
@@ -222,36 +234,21 @@ public class Environnement extends Observable implements Runnable {
         return demarre;
     }
     
-    synchronized public void demarrerAlea()
-    {
-        demarre = true;
-        for (int i = 0; i<tabCases.length; i++)
-        {
-            for (int j = 0; j<tabCases[0].length; j++)
-            {
-                tabCases[i][j].setEtatAlea();
-            }
-        }
-        
-        notifyAll();
-    }
-    
-    
     @Override
     public void run() {
-       while(!demarre)
-       {
-           synchronized (this)
-           {
-               try {
-                   wait();
-               } catch (InterruptedException ex) {
-                   Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
-               }
-           }      
-       }
         while(true)
         {
+            if (!demarre) {
+                synchronized (this)
+                {
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            
             if(miseenpause){
                 synchronized(this){
                     try {
@@ -261,22 +258,16 @@ public class Environnement extends Observable implements Runnable {
                     }
                 }
             }
-            int _nbUsed = 0;
-            for(Entry<Case, Point> entry : map.entrySet()) {
-                Case current = entry.getKey();
-                if (current.isOpen() || current.isFlagged()) {
-                    _nbUsed++;
-                }
-            }
-            if (_nbUsed == largeur*longueur) {
-                initialisation(largeur, longueur);
-            }
+            
             try {
                 Thread.currentThread().sleep(vitesse);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
             }
             timer++;
+            if (nbOpened+totalMine == largeur*longueur || lost) {
+                initialisation(largeur, longueur);
+            }
             //System.out.println("Je me réveille et je notifie les mises à jours");
             setChanged();
             notifyObservers();
@@ -290,5 +281,34 @@ public class Environnement extends Observable implements Runnable {
         notifyObservers();
     }
     
+    synchronized public void addOpened()
+    {
+        nbOpened++;
+    }
+    
+    public int getNbFlagged()
+    {
+        return nbFlagged;
+    }
+    
+    public int getTotalMine()
+    {
+        return totalMine;
+    }
+    
+    public void addFlagged()
+    {
+        nbFlagged++;
+    }
+    
+    public void removeFlagged()
+    {
+        nbFlagged--;
+    }
+    
+    public void setLost(boolean flag)
+    {
+        lost = flag;
+    }
 }
 

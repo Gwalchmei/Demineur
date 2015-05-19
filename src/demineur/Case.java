@@ -20,9 +20,10 @@ public class Case {
     static int OPEN = 1;
     static int FLAGGED = 2;
     
-    public void setEtatAlea()
+    public Case()
     {
-        
+        super();
+        etatCourant = Case.CLOSE;
     }
     
     public void setEtatCourant(int e)
@@ -34,11 +35,6 @@ public class Case {
         return etatCourant;
     }
     
-    public void miseAjour()
-    {
-        
-    }
-    
     public void cliqueSouris(Environnement env, boolean mainclick)
     {
         if(!env.getPause()) {
@@ -46,6 +42,7 @@ public class Case {
             if (mainclick) {
                 if (etatCourant == Case.CLOSE) {
                     etatCourant = Case.OPEN;
+                    env.addOpened();
                     if (!mined) {
                         Case[] voisins = env.getVoisins(this);
                         int _nbMined = 0;
@@ -56,6 +53,8 @@ public class Case {
                         if (nbMined == 0){
                             cliqueVoisins(env, voisins);
                         }
+                    } else {
+                        env.setLost(true);
                     }
                 } else if (etatCourant == Case.OPEN && nbMined > 0) {
                     Case[] voisins = env.getVoisins(this);
@@ -67,7 +66,7 @@ public class Case {
                         if (currentVoisin.isFlagged()) { _nbFlagged++; }
                         closedCase[i] = !currentVoisin.isOpen();
                     }
-                    //nbFlagged = _nbFlagged;
+
                     if (nbMined == _nbFlagged){
                         for (int i = 0; i < voisins.length; i++){
                             if (closedCase[i]) {
@@ -77,7 +76,13 @@ public class Case {
                     }
                 }
             } else if (!mainclick && etatCourant != Case.OPEN) {
-                etatCourant = etatCourant == Case.CLOSE ? Case.FLAGGED : Case.CLOSE;
+                if (etatCourant == Case.CLOSE) {
+                    etatCourant = Case.FLAGGED;
+                    env.addFlagged();
+                } else {
+                    etatCourant = Case.CLOSE;
+                    env.removeFlagged();
+                }
             }
         }
         
@@ -113,29 +118,5 @@ public class Case {
     public int getNbMined()
     {
         return nbMined;
-    }
-    
-    public void setEtatSuivant(Environnement env)
-    {
-        /*// Décide de l'état suivant en appliquant les règles de bases
-        Case[] voisins = env.getVoisins(this);
-        int nombreVoisins=0;
-        for (int i = 0; i < voisins.length; i++)
-        {
-            if (voisins[i].getEtatCourant())
-            {
-                nombreVoisins++;
-            }
-        }
-        
-        switch (nombreVoisins)
-        { 
-            case 2 : etatSuivant = etatCourant;
-                     break;
-            case 3 : etatSuivant = true;
-                     break;
-            default : etatSuivant = false;
-                      break;   
-        }   */
     }
 }

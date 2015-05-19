@@ -23,6 +23,7 @@ public class CaseVue extends JLabel{
     private int largeur;
     private Environnement env;
     private FenetreP vue;
+    protected MouseAdapter m;
     
     
     @Override
@@ -49,7 +50,8 @@ public class CaseVue extends JLabel{
         largeur = _largeur;
         env = _env;
         vue = _vue;
-        addMouseListener(new MouseAdapter () {
+        
+        m = new MouseAdapter () {
             @Override
             public void mouseClicked(MouseEvent arg0) {
                 super.mouseClicked(arg0);
@@ -67,7 +69,8 @@ public class CaseVue extends JLabel{
                 super.mouseExited(arg0);
                 effacerMotif();
             }
-        });
+        };
+        addMouseListener(m);
         setOpaque(true);
         
         
@@ -123,5 +126,12 @@ public class CaseVue extends JLabel{
         int y = indice%largeur;
         Color borderColor = new Color(0x393638);
         vue.tabCasesVue[indice].setBorder(BorderFactory.createLineBorder(borderColor));
+    }
+    
+    public void destroy()
+    {
+        setBackground(new Color(0x121212));
+        removeMouseListener(m);
+        System.out.println("destroy");
     }
 }
