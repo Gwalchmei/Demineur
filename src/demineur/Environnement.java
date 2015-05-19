@@ -231,8 +231,6 @@ public class Environnement extends Observable implements Runnable {
                 }
                 }
             }
-            calculerGenerationSuivante();
-            //System.out.println("Je m'endors !");
             try {
                 Thread.currentThread().sleep(vitesse);
             } catch (InterruptedException ex) {
@@ -242,28 +240,6 @@ public class Environnement extends Observable implements Runnable {
             setChanged();
             notifyObservers();
         }
-    }
-    
-    
-    
-    public void calculerGenerationSuivante()
-    {
-        // première boucle pour calculer les états suivant
-        /*for (int i = 0; i<tabCases.length; i++)
-        {
-            for (int j = 0; j<tabCases[0].length; j++)
-            {
-                tabCases[i][j].setEtatSuivant(this);
-            }
-        }
-        // deuxième boucle pour la mise à jour
-        for (int i = 0; i<tabCases.length; i++)
-        {
-            for (int j = 0; j<tabCases[0].length; j++)
-            {
-                tabCases[i][j].miseAjour();
-            }
-        }*/
     }
     
     public void cliqueSouris(int x, int y, boolean mainclick)

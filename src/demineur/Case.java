@@ -41,23 +41,48 @@ public class Case {
     
     public void cliqueSouris(Environnement env, boolean mainclick)
     {
-        if (mainclick && etatCourant == Case.CLOSE) {
-            etatCourant = Case.OPEN;
-            if (!mined) {
-                Case[] voisins = env.getVoisins(this);
-                int _nbMined = 0;
-                for (int i = 0; i < voisins.length; i++){
-                    if (voisins[i].getMined()) { _nbMined++; }
-                }
-                nbMined = _nbMined;
-                if (nbMined == 0){
+        if (mainclick) {
+            if (etatCourant == Case.CLOSE) {
+                etatCourant = Case.OPEN;
+                if (!mined) {
+                    Case[] voisins = env.getVoisins(this);
+                    int _nbMined = 0;
                     for (int i = 0; i < voisins.length; i++){
-                        voisins[i].cliqueSouris(env, true);
+                        if (voisins[i].getMined()) { _nbMined++; }
+                    }
+                    nbMined = _nbMined;
+                    if (nbMined == 0){
+                        cliqueVoisins(env, voisins);
+                    }
+                }
+            } else if (etatCourant == Case.OPEN && nbMined > 0) {
+                Case[] voisins = env.getVoisins(this);
+                Case currentVoisin = null;
+                int _nbFlagged = 0;
+                boolean[] closedCase = new boolean[8];
+                for (int i = 0; i < voisins.length; i++){
+                    currentVoisin = voisins[i];
+                    if (currentVoisin.isFlagged()) { _nbFlagged++; }
+                    closedCase[i] = !currentVoisin.isOpen();
+                }
+                //nbFlagged = _nbFlagged;
+                if (nbMined == _nbFlagged){
+                    for (int i = 0; i < voisins.length; i++){
+                        if (closedCase[i]) {
+                            voisins[i].cliqueSouris(env, true);
+                        }
                     }
                 }
             }
         } else if (!mainclick && etatCourant != Case.OPEN) {
             etatCourant = etatCourant == Case.CLOSE ? Case.FLAGGED : Case.CLOSE;
+        }
+    }
+    
+    public void cliqueVoisins(Environnement env, Case[] voisins)
+    {
+        for (int i = 0; i < voisins.length; i++){
+            voisins[i].cliqueSouris(env, true);
         }
     }
     
