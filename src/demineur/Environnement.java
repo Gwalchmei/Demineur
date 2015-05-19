@@ -27,6 +27,7 @@ public class Environnement extends Observable implements Runnable {
     protected HashMap<Case, Point> map;
     protected boolean demarre;
     protected int vitesse;
+    protected int timer;
     
     public Environnement(int x, int y)
     {
@@ -47,8 +48,14 @@ public class Environnement extends Observable implements Runnable {
         }
         miseenpause = false;
         demarre = false; 
-        vitesse = 100;
+        vitesse = 1000;
+        timer = 0;
         
+    }
+    
+    public int getTimer()
+    {
+        return timer;
     }
     
     public int getVitesse()
@@ -216,21 +223,20 @@ public class Environnement extends Observable implements Runnable {
                } catch (InterruptedException ex) {
                    Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
                }
-           }
-            
-           
+           }      
        }
         while(true)
         {
             if(miseenpause){
                 synchronized(this){
-                try {
-                    wait();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                    try {
+                        wait();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
+            timer++;
             try {
                 Thread.currentThread().sleep(vitesse);
             } catch (InterruptedException ex) {
