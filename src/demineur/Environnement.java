@@ -40,7 +40,7 @@ public class Environnement extends Observable implements Runnable {
             {
                 tabCases[i][j] = new Case();
                 map.put(tabCases[i][j], new Point(i,j));
-                if (Math.random() < 0.1 && nbMine < 40) {
+                if (Math.random() < 0.1 && nbMine < 500) {
                     tabCases[i][j].setMined();
                     nbMine++;
                 }

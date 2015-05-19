@@ -197,7 +197,7 @@ public class FenetreP extends JFrame implements Observer {
         
         setJMenuBar(jm);
         setTitle("Démineur Roger Thomas");
-        setSize(1024,768);
+        setSize(1920, 1080);
         
         
         JPanel ensemble = new JPanel(new BorderLayout());
