@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 // Pour la gestion XML
 import java.io.*;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -28,19 +29,25 @@ public class Environnement extends Observable implements Runnable {
     protected boolean demarre;
     protected int vitesse;
     protected int timer;
+    protected int totalMine;
+    protected int largeur;
+    protected int longueur;
     
     public Environnement(int x, int y)
     {
-        map = new HashMap(x*y);
-        tabCases = new Case[x][y];
+        largeur = x;
+        longueur = y;
+        map = new HashMap(largeur*longueur);
+        tabCases = new Case[largeur][longueur];
+        totalMine = largeur*longueur/10;
         int nbMine = 0;
-        for (int i = 0; i<x; i++)
+        for (int i = 0; i<largeur; i++)
         {
-            for(int j = 0; j<y; j++)
+            for(int j = 0; j<longueur; j++)
             {
                 tabCases[i][j] = new Case();
                 map.put(tabCases[i][j], new Point(i,j));
-                if (Math.random() < 0.1 && nbMine < 500) {
+                if (Math.random() < 0.1 && nbMine < totalMine) {
                     tabCases[i][j].setMined();
                     nbMine++;
                 }
@@ -236,12 +243,22 @@ public class Environnement extends Observable implements Runnable {
                     }
                 }
             }
-            timer++;
+            int _nbUsed = 0;
+            for(Entry<Case, Point> entry : map.entrySet()) {
+                Case current = entry.getKey();
+                if (current.isOpen() || current.isFlagged()) {
+                    _nbUsed++;
+                }
+            }
+            if (_nbUsed == largeur*longueur) {
+                System.out.println("fini");
+            }
             try {
                 Thread.currentThread().sleep(vitesse);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
             }
+            timer++;
             //System.out.println("Je me réveille et je notifie les mises à jours");
             setChanged();
             notifyObservers();
