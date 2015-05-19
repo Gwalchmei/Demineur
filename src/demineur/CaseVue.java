@@ -43,10 +43,7 @@ public class CaseVue extends JLabel{
     public CaseVue(int _indice, int _largeur, Environnement _env, FenetreP _vue) {
         super();
         
-        Color bgColor = new Color(0x5a5a5a);
-        setBackground(bgColor);
-        setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
-        setHorizontalAlignment(SwingConstants.CENTER);
+        defaultView();
         
         indice = _indice;
         largeur = _largeur;
@@ -71,10 +68,37 @@ public class CaseVue extends JLabel{
                 effacerMotif();
             }
         });
-        setText(" ");
         setOpaque(true);
         
         
+    }
+    
+    public final void defaultView(){
+        Color bgColor = new Color(0x5a5a5a);
+        setBackground(bgColor);
+        setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setText(" ");
+    }
+    
+    public void openedView(Case c) {
+        Color bgColor = new Color(0xF3F3F3);
+        setBackground(bgColor);
+        if (c.getNbMined() != 0) {
+            setText(Integer.toString(c.getNbMined()));
+            setForeground(Color.BLACK);
+        }
+        if (c.getMined()){
+            Color iconColor = new Color(0xEE1700);
+            setText("\uD83D\uDCA3");
+            setForeground(iconColor);
+        }
+    }
+    
+    public void flaggedView() {
+        Color iconColor = new Color(0xEE1700);
+        setText("\u2691");
+        setForeground(iconColor);
     }
     
     public void cliqueSouris(MouseEvent e){

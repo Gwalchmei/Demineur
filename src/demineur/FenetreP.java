@@ -365,21 +365,11 @@ public class FenetreP extends JFrame implements Observer {
                 Color iconColor = new Color(0xEE1700);
 
                 if (temp.isOpen()) {
-                    Color bgColor = new Color(0xF3F3F3);
-                    tabCasesVue[i*largeur+j].setBackground(bgColor);
-                    if (temp.getNbMined() != 0) {
-                        tabCasesVue[i*largeur+j].setText(Integer.toString(temp.getNbMined()));
-                        tabCasesVue[i*largeur+j].setForeground(Color.BLACK);
-                    }
-                    if (temp.getMined()){
-                        tabCasesVue[i*largeur+j].setText("\uD83D\uDCA3");
-                        tabCasesVue[i*largeur+j].setForeground(iconColor);
-                    }
+                    tabCasesVue[i*largeur+j].openedView(temp);
                 } else if (temp.isFlagged()) {
-                    tabCasesVue[i*largeur+j].setText("\u2691");
-                    tabCasesVue[i*largeur+j].setForeground(iconColor);
+                    tabCasesVue[i*largeur+j].flaggedView();
                 } else {
-                    tabCasesVue[i*largeur+j].setText(" ");
+                    tabCasesVue[i*largeur+j].defaultView();
                 }
                 
             }
