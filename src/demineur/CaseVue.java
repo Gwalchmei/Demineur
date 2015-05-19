@@ -5,10 +5,12 @@
 package demineur;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -25,7 +27,10 @@ public class CaseVue extends JLabel{
     public CaseVue(int _indice, int _largeur, Environnement _env, FenetreP _vue) {
         super();
         
-        setBackground(Color.GRAY);
+        Color bgColor = new Color(0x5a5a5a);
+        setBackground(bgColor);
+        setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
+        setHorizontalAlignment(SwingConstants.CENTER);
         indice = _indice;
         largeur = _largeur;
         env = _env;
@@ -76,6 +81,7 @@ public class CaseVue extends JLabel{
     public void effacerMotif() {
         int x = indice/largeur;
         int y = indice%largeur;
-        vue.tabCasesVue[indice].setBorder(BorderFactory.createLineBorder(Color.black));
+        Color borderColor = new Color(0x393638);
+        vue.tabCasesVue[indice].setBorder(BorderFactory.createLineBorder(borderColor));
     }
 }
