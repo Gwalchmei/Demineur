@@ -306,7 +306,8 @@ public class FenetreP extends JFrame implements Observer {
         Option.add(textVit);
         
         JComponent pan = new JPanel (new GridLayout(longueur,largeur));
-        Border blackline = BorderFactory.createLineBorder(Color.decode("393636"), 1);
+        Color borderColor = new Color(0x393638);
+        Border blackline = BorderFactory.createLineBorder(borderColor, 1);
         
         for(int i = 0; i<(longueur*largeur); i++)
         {
@@ -352,12 +353,13 @@ public class FenetreP extends JFrame implements Observer {
                 }*/
                 Case temp = env.tabCases[i][j];
                 if (temp.isOpen()) {
-                    tabCasesVue[i*largeur+j].setBackground(Color.WHITE);
+                    Color bgColor = new Color(0xF3F3F3);
+                    tabCasesVue[i*largeur+j].setBackground(bgColor);
                     if (temp.getNbMined() != 0) {
                         tabCasesVue[i*largeur+j].setText(Integer.toString(temp.getNbMined()));
                     }
                     if (temp.getMined()){
-                        tabCasesVue[i*largeur+j].setText("B");
+                        tabCasesVue[i*largeur+j].setText("\uD83D\uDCA3");
                     }
                 } if (temp.isFlagged()) {
                     tabCasesVue[i*largeur+j].setText("F");
