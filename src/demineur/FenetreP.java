@@ -194,8 +194,8 @@ public class FenetreP extends JFrame implements Observer {
         jm.add(m);
         
         setJMenuBar(jm);
-        setTitle("Jeu de la vie SAUL_THOMAS");
-        setSize(600,600);
+        setTitle("Démineur Roger Thomas");
+        setSize(800,600);
         
         
         JPanel ensemble = new JPanel(new BorderLayout());
@@ -306,7 +306,7 @@ public class FenetreP extends JFrame implements Observer {
         Option.add(textVit);
         
         JComponent pan = new JPanel (new GridLayout(longueur,largeur));
-        Border blackline = BorderFactory.createLineBorder(Color.black, 1);
+        Border blackline = BorderFactory.createLineBorder(Color.decode("393636"), 1);
         
         for(int i = 0; i<(longueur*largeur); i++)
         {

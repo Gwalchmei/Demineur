@@ -5,6 +5,9 @@
  */
 package demineur;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 /**
  *
  * @author Epulapp
@@ -16,6 +19,22 @@ public class Demineur {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        try {
+        UIManager.setLookAndFeel(
+            UIManager.getSystemLookAndFeelClassName());
+        } 
+        catch (UnsupportedLookAndFeelException e) {
+        }
+        catch (ClassNotFoundException e) {
+            // handle exception
+        }
+        catch (InstantiationException e) {
+            // handle exception
+        }
+        catch (IllegalAccessException e) {
+            // handle exception
+        }
         Environnement env = new Environnement(40,40);
         FenetreP fen = new FenetreP(env);
         fen.setVisible(true);
