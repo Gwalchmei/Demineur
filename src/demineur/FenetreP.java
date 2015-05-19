@@ -6,6 +6,7 @@ package demineur;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,7 @@ public class FenetreP extends JFrame implements Observer {
     protected JButton bPlayPause;
     protected JComboBox ccharge = new JComboBox();
     protected JTextField textVit = new JTextField();
+    protected JLabel lbTimer = new JLabel();
     public FenetreP (Environnement _env)
     {
         super();
@@ -195,13 +197,13 @@ public class FenetreP extends JFrame implements Observer {
         
         setJMenuBar(jm);
         setTitle("Démineur Roger Thomas");
-        setSize(800,600);
+        setSize(1024,768);
         
         
         JPanel ensemble = new JPanel(new BorderLayout());
         
         /* CREATION DES BOUTONS */
-        JPanel Option = new JPanel(new GridLayout(3,3));
+        JPanel Option = new JPanel(new GridLayout(1,1));
         
         JButton blance = new JButton("Lancer la partie");
         blance.addMouseListener(new MouseAdapter () {
@@ -212,16 +214,16 @@ public class FenetreP extends JFrame implements Observer {
             }
         });
         Option.add(blance); 
-        
-        JButton blancealea = new JButton("grille aleatoire");
-        blancealea.addMouseListener(new MouseAdapter () {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                super.mouseClicked(arg0);
-                lancerLaPartieAlea();
-            }
-        });
-        Option.add(blancealea); 
+//        
+//        JButton blancealea = new JButton("grille aleatoire");
+//        blancealea.addMouseListener(new MouseAdapter () {
+//            @Override
+//            public void mousePressed(MouseEvent arg0) {
+//                super.mouseClicked(arg0);
+//                lancerLaPartieAlea();
+//            }
+//        });
+//        Option.add(blancealea); 
         
         bPlayPause = new JButton("Pause");
 
@@ -235,75 +237,81 @@ public class FenetreP extends JFrame implements Observer {
         
         Option.add(bPlayPause);
         
-        JButton bcharger = new JButton("Charger");
+        lbTimer.setText("000");
+        lbTimer.setHorizontalAlignment(SwingConstants.CENTER);
+        lbTimer.setFont(new  Font("Consolas", Font.PLAIN, 36));
         
-        bcharger.addMouseListener(new MouseAdapter () {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                super.mouseClicked(arg0);
-                charge();
-            }
-        });
+        Option.add(lbTimer);
         
-        Option.add(bcharger);
+//        JButton bcharger = new JButton("Charger");
+//        
+//        bcharger.addMouseListener(new MouseAdapter () {
+//            @Override
+//            public void mousePressed(MouseEvent arg0) {
+//                super.mouseClicked(arg0);
+//                charge();
+//            }
+//        });
+//        
+//        Option.add(bcharger);
+//        
+//        JButton bsauve = new JButton("Sauvegarde");
+//        
+//        bsauve.addMouseListener(new MouseAdapter () {
+//            @Override
+//            public void mousePressed(MouseEvent arg0) {
+//                super.mouseClicked(arg0);
+//                sauvegarde();
+//            }
+//        });
+//        Option.add(bsauve);
+//        
+//        JButton brm = new JButton("Effacer");
+//        
+//        brm.addMouseListener(new MouseAdapter () {
+//            @Override
+//            public void mousePressed(MouseEvent arg0) {
+//                super.mouseClicked(arg0);
+//                effacer();
+//            }
+//        });
         
-        JButton bsauve = new JButton("Sauvegarde");
-        
-        bsauve.addMouseListener(new MouseAdapter () {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                super.mouseClicked(arg0);
-                sauvegarde();
-            }
-        });
-        Option.add(bsauve);
-        
-        JButton brm = new JButton("Effacer");
-        
-        brm.addMouseListener(new MouseAdapter () {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                super.mouseClicked(arg0);
-                effacer();
-            }
-        });
-        
-        Option.add(brm);
+//        Option.add(brm);
         /* CREATION DES MENUS DEROULANTS */
         
-        ccharge.addItem("canon");
-        ccharge.addItem("etoile");
-        ccharge.addItem("pulsar");
-        ccharge.addItem("prixnobel");
-        ccharge.addActionListener(new ItemAction2());
-        Option.add(ccharge);
+//        ccharge.addItem("canon");
+//        ccharge.addItem("etoile");
+//        ccharge.addItem("pulsar");
+//        ccharge.addItem("prixnobel");
+//        ccharge.addActionListener(new ItemAction2());
+//        Option.add(ccharge);
         
         /* TextField pour changer la vitesse */
+//        
+//        textVit = new JTextField(Integer.toString(env.getVitesse()));
+//        
+//        
+//        textVit.addKeyListener( new KeyListener(){
+//
+//                @Override
+//                public void keyPressed(KeyEvent e){
+//
+//                    gestionText(e);
+//                }
+//                @Override
+//                public void keyReleased(KeyEvent e)
+//                {
+//                    
+//                }
+//                
+//                @Override
+//                public void keyTyped(KeyEvent e)
+//                {
+//                    
+//                }
+//        });
         
-        textVit = new JTextField(Integer.toString(env.getVitesse()));
-        
-        
-        textVit.addKeyListener( new KeyListener(){
-
-                @Override
-                public void keyPressed(KeyEvent e){
-
-                    gestionText(e);
-                }
-                @Override
-                public void keyReleased(KeyEvent e)
-                {
-                    
-                }
-                
-                @Override
-                public void keyTyped(KeyEvent e)
-                {
-                    
-                }
-        });
-        
-        Option.add(textVit);
+//        Option.add(textVit);
         
         JComponent pan = new JPanel (new GridLayout(longueur,largeur));
         Color borderColor = new Color(0x393638);
@@ -359,6 +367,7 @@ public class FenetreP extends JFrame implements Observer {
                     tabCasesVue[i*largeur+j].setBackground(bgColor);
                     if (temp.getNbMined() != 0) {
                         tabCasesVue[i*largeur+j].setText(Integer.toString(temp.getNbMined()));
+                        tabCasesVue[i*largeur+j].setForeground(Color.BLACK);
                     }
                     if (temp.getMined()){
                         tabCasesVue[i*largeur+j].setText("\uD83D\uDCA3");
