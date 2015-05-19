@@ -172,7 +172,7 @@ public class Environnement extends Observable implements Runnable {
         {
             for (int j = 0; j<tabCases[0].length; j++)
             {
-                tabCases[i][j].setEtatCourant(false);
+                tabCases[i][j].setEtatCourant(Case.CLOSE);
             }
         }
     }
@@ -266,9 +266,9 @@ public class Environnement extends Observable implements Runnable {
         }*/
     }
     
-    public void cliqueSouris(int x, int y)
+    public void cliqueSouris(int x, int y, boolean mainclick)
     {
-        tabCases[x][y].cliqueSouris(this);
+        tabCases[x][y].cliqueSouris(this, mainclick);
         setChanged();
         notifyObservers();
     }

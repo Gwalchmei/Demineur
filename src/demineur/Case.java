@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 package demineur;
+import java.awt.event.MouseEvent;
 import java.lang.Math;
 
 /**
@@ -11,53 +12,63 @@ import java.lang.Math;
  */
 public class Case {
     
-    protected boolean etatCourant;
-    protected boolean etatSuivant;
+    protected int etatCourant;
     protected boolean mined;
     protected int nbMined;
-    protected boolean open;
+    
+    static int CLOSE = 0;
+    static int OPEN = 1;
+    static int FLAGGED = 2;
     
     public void setEtatAlea()
     {
-        etatCourant = (Math.random() > 0.5);
+        
     }
     
-    public void setEtatCourant(boolean b)
+    public void setEtatCourant(int e)
     {
-        etatCourant = b;
+        etatCourant = e;
     }
-    public boolean getEtatCourant()
+    public int getEtatCourant()
     {
         return etatCourant;
     }
     
     public void miseAjour()
     {
-        etatCourant = etatSuivant;
+        
     }
     
-    public void cliqueSouris(Environnement env)
+    public void cliqueSouris(Environnement env, boolean mainclick)
     {
-        etatCourant = !etatCourant;
-        if (!open) {
-            Case[] voisins = env.getVoisins(this);
-            int _nbMined = 0;
-            for (int i = 0; i < voisins.length; i++){
-                if (voisins[i].getMined()) { _nbMined++; }
-            }
-            nbMined = _nbMined;
-            open = true;
-            if (nbMined == 0){
+        if (mainclick && etatCourant == Case.CLOSE) {
+            etatCourant = Case.OPEN;
+            if (!mined) {
+                Case[] voisins = env.getVoisins(this);
+                int _nbMined = 0;
                 for (int i = 0; i < voisins.length; i++){
-                    voisins[i].cliqueSouris(env);
+                    if (voisins[i].getMined()) { _nbMined++; }
+                }
+                nbMined = _nbMined;
+                if (nbMined == 0){
+                    for (int i = 0; i < voisins.length; i++){
+                        voisins[i].cliqueSouris(env, true);
+                    }
                 }
             }
-        }     
+        } else if (!mainclick && etatCourant != Case.OPEN) {
+            etatCourant = etatCourant == Case.CLOSE ? Case.FLAGGED : Case.CLOSE;
+        }
     }
     
-    public boolean getOpen()
+    public boolean isOpen()
     {
-        return open;
+        return (etatCourant == Case.OPEN);
+    }
+    
+    public boolean isFlagged()
+    {
+        return (etatCourant == Case.FLAGGED);
     }
     
     public boolean getMined()
@@ -77,7 +88,7 @@ public class Case {
     
     public void setEtatSuivant(Environnement env)
     {
-        // Décide de l'état suivant en appliquant les règles de bases
+        /*// Décide de l'état suivant en appliquant les règles de bases
         Case[] voisins = env.getVoisins(this);
         int nombreVoisins=0;
         for (int i = 0; i < voisins.length; i++)
@@ -96,6 +107,6 @@ public class Case {
                      break;
             default : etatSuivant = false;
                       break;   
-        }   
+        }   */
     }
 }

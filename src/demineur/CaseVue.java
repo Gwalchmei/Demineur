@@ -34,7 +34,7 @@ public class CaseVue extends JLabel{
             @Override
             public void mouseClicked(MouseEvent arg0) {
                 super.mouseClicked(arg0);
-                cliqueSouris();
+                cliqueSouris(arg0);
             }
             
             @Override
@@ -55,15 +55,14 @@ public class CaseVue extends JLabel{
         
     }
     
-    public void cliqueSouris(){
+    public void cliqueSouris(MouseEvent e){
         //System.out.println("On a clique sur la case !");
         int x;
         int y;
         
         x = indice/largeur;
         y = indice%largeur;
-        env.cliqueSouris(x,y);
-        
+        env.cliqueSouris(x,y,e.getButton() == MouseEvent.BUTTON1 ? true : false);
     }
     
     public void coloriserMotif() {

@@ -351,7 +351,7 @@ public class FenetreP extends JFrame implements Observer {
                     
                 }*/
                 Case temp = env.tabCases[i][j];
-                if (temp.getOpen()) {
+                if (temp.isOpen()) {
                     tabCasesVue[i*largeur+j].setBackground(Color.WHITE);
                     if (temp.getNbMined() != 0) {
                         tabCasesVue[i*largeur+j].setText(Integer.toString(temp.getNbMined()));
@@ -359,6 +359,8 @@ public class FenetreP extends JFrame implements Observer {
                     if (temp.getMined()){
                         tabCasesVue[i*largeur+j].setText("B");
                     }
+                } if (temp.isFlagged()) {
+                    tabCasesVue[i*largeur+j].setText("F");
                 }
                 
             }
