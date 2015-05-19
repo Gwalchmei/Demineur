@@ -47,12 +47,22 @@ public class Environnement extends Observable implements Runnable {
             {
                 tabCases[i][j] = new Case();
                 map.put(tabCases[i][j], new Point(i,j));
-                if (Math.random() < 0.1 && nbMine < totalMine) {
-                    tabCases[i][j].setMined();
-                    nbMine++;
+            }
+        }
+        while (nbMine < totalMine) {
+            for (int i = 0; i<largeur; i++)
+            {
+                for(int j = 0; j<longueur; j++)
+                {
+                    Case current = tabCases[i][j];
+                    if (Math.random() < 0.1 && nbMine < totalMine && !current.getMined()) {
+                        current.setMined();
+                        nbMine++;
+                    }
                 }
             }
         }
+        
         miseenpause = false;
         demarre = false; 
         vitesse = 1000;
