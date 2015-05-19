@@ -352,6 +352,8 @@ public class FenetreP extends JFrame implements Observer {
                     
                 }*/
                 Case temp = env.tabCases[i][j];
+                Color iconColor = new Color(0xEE1700);
+
                 if (temp.isOpen()) {
                     Color bgColor = new Color(0xF3F3F3);
                     tabCasesVue[i*largeur+j].setBackground(bgColor);
@@ -360,9 +362,11 @@ public class FenetreP extends JFrame implements Observer {
                     }
                     if (temp.getMined()){
                         tabCasesVue[i*largeur+j].setText("\uD83D\uDCA3");
+                        tabCasesVue[i*largeur+j].setForeground(iconColor);
                     }
                 } if (temp.isFlagged()) {
-                    tabCasesVue[i*largeur+j].setText("F");
+                    tabCasesVue[i*largeur+j].setText("\u2691");
+                    tabCasesVue[i*largeur+j].setForeground(iconColor);
                 }
                 
             }
