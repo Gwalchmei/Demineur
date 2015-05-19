@@ -35,6 +35,11 @@ public class Environnement extends Observable implements Runnable {
     
     public Environnement(int x, int y)
     {
+        initialisation(x,y);
+    }
+    
+    private void initialisation(int x, int y)
+    {
         largeur = x;
         longueur = y;
         map = new HashMap(largeur*longueur);
@@ -67,7 +72,6 @@ public class Environnement extends Observable implements Runnable {
         demarre = false; 
         vitesse = 1000;
         timer = 0;
-        
     }
     
     public int getTimer()
@@ -265,7 +269,7 @@ public class Environnement extends Observable implements Runnable {
                 }
             }
             if (_nbUsed == largeur*longueur) {
-                System.out.println("fini");
+                initialisation(largeur, longueur);
             }
             try {
                 Thread.currentThread().sleep(vitesse);
