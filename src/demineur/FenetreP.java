@@ -39,7 +39,6 @@ public class FenetreP extends JFrame implements Observer {
     protected int longueur;
     protected int largeur;
     protected CaseVue tabCasesVue[];
-    protected JButton bPlayPause;
     protected JComboBox ccharge = new JComboBox();
     protected JTextField textVit = new JTextField();
     protected JLabel lbTimer = new JLabel();
@@ -63,90 +62,21 @@ public class FenetreP extends JFrame implements Observer {
     });   
     }
     
-    public void miseEnPause()
-    {
-        System.out.println("miseEnPause()");
-        env.setPause(true);
-    }
-    
-    public void sauvegarde()
-    {
-        //env.creerXMLenv();
-    }
-    
-    public void charge()
-    {
-        //env.chargerXML("quicksave.xml");
-    }
-    
-    public void charge(Object c)
-    {
-        String s = (String) c;
-        //env.chargerXML("motif/"+s+".xml");
-    }
-    
-    public void mettreEnActivite()
-    {
-        System.out.println("mettreEnActivite()");
-        env.setActif();
-    
-    }
-    
     public int getLongueur()
     {
         return longueur;
     }
     
-    public void gestionText(KeyEvent e)
-    {
-        if (e.getKeyChar() == KeyEvent.VK_ENTER)
-                    {
-                        env.setVitesse(Integer.parseInt(textVit.getText()));
-                        
-                    }
-                    else
-                    {
-                        if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9' )
-                        {
-                            textVit.setEditable(true);
-                        }
-                        else
-                        {
-                            if (e.getKeyCode() != KeyEvent.VK_BACK_SPACE)
-                            {
-                                textVit.setEditable(false);
-                            }
-                            
-                            
-                        }
-                    }
-    }
-    public void mettreEnActivitePause() 
-    {
-
-        if(!"Pause".equals(bPlayPause.getText()))
-        {
-            bPlayPause.setText("Pause");
-            mettreEnActivite();
-        }else 
-        {
-            bPlayPause.setText("Play");
-            miseEnPause();    
-        }
-    
-    }
-    
-    
     public void lancerLaPartie()
     {
-        env.demarrer();
+        env.initialisation(env.getDifficulte());
     }
-    
+
     public void effacer()
     {
         env.effacer();
     }
-    
+
     public void build()
     {
         JMenuBar jm = new JMenuBar();
@@ -154,7 +84,7 @@ public class FenetreP extends JFrame implements Observer {
         JMenu m = new JMenu("Jeu");
         
         JMenuItem mi = new JMenuItem("Lancer la partie");
-        
+
         mi.addMouseListener(new MouseAdapter () {
             @Override
             public void mousePressed(MouseEvent arg0) {
@@ -164,32 +94,53 @@ public class FenetreP extends JFrame implements Observer {
             }
         });
         
-        JMenuItem mPause = new JMenuItem("Mettre en pause");
+        JMenuItem miQuitter = new JMenuItem("Quitter la partie");
         
-        mPause.addMouseListener(new MouseAdapter () {
+        miQuitter.addMouseListener(new MouseAdapter(){
             @Override
-            public void mousePressed(MouseEvent arg0) {
-                System.out.println("test");
-                super.mouseClicked(arg0);
-                miseEnPause();
+            public void mousePressed(MouseEvent e) {
+                super.mouseClicked(e);
+                System.exit(0);
             }
         });
-        
-        JMenuItem mPlay = new JMenuItem("Mettre en activité");
-        mPlay.addMouseListener(new MouseAdapter () {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                super.mouseClicked(arg0);
-                mettreEnActivite();
-            }
-        });
-        
-        
-        
-        m.add(mPause);
-        m.add(mPlay);
+
         m.add(mi);
+        m.add(miQuitter);
+        
+        JMenu mDifficulte = new JMenu("Difficulté");
+        
+        JMenuItem miEasy = new JMenuItem("Facile");
+        miEasy.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                super.mouseClicked(e);
+                env.initialisation(Environnement.EASY);
+            }
+        });
+        
+        JMenuItem miMedium = new JMenuItem("Moyen");
+        miMedium.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                super.mouseClicked(e);
+                env.initialisation(Environnement.MEDIUM);
+            }
+        });
+        
+        JMenuItem miHard = new JMenuItem("Difficile");
+        miHard.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                super.mouseClicked(e);
+                env.initialisation(Environnement.HARD);
+            }
+        });
+        
+        mDifficulte.add(miEasy);
+        mDifficulte.add(miMedium);
+        mDifficulte.add(miHard);
         jm.add(m);
+        jm.add(mDifficulte);
         
         setJMenuBar(jm);
         setTitle("Démineur Roger Thomas");
@@ -199,7 +150,7 @@ public class FenetreP extends JFrame implements Observer {
         ensemble = new JPanel(new BorderLayout());
         
         /* CREATION DES BOUTONS */
-        JPanel Option = new JPanel(new GridLayout(1,1));
+        JPanel Option = new JPanel(new GridLayout(1,3));
         
         JButton blance = new JButton("Lancer la partie");
         blance.addMouseListener(new MouseAdapter () {
@@ -209,110 +160,20 @@ public class FenetreP extends JFrame implements Observer {
                 lancerLaPartie();
             }
         });
-        Option.add(blance); 
-//        
-//        JButton blancealea = new JButton("grille aleatoire");
-//        blancealea.addMouseListener(new MouseAdapter () {
-//            @Override
-//            public void mousePressed(MouseEvent arg0) {
-//                super.mouseClicked(arg0);
-//                lancerLaPartieAlea();
-//            }
-//        });
-//        Option.add(blancealea); 
-        
-        bPlayPause = new JButton("Pause");
-
-        bPlayPause.addMouseListener(new MouseAdapter () {
-            @Override
-            public void mousePressed(MouseEvent arg0) {
-                super.mouseClicked(arg0);
-                mettreEnActivitePause();
-            }
-        }); 
-        
-        Option.add(bPlayPause);
         
         lbTimer.setText("000");
         lbTimer.setHorizontalAlignment(SwingConstants.CENTER);
         lbTimer.setFont(new  Font("Consolas", Font.PLAIN, 36));
         
         Option.add(lbTimer);
+        Option.add(blance); 
         
-        lbNbFlagged.setText("0");
+        lbNbFlagged.setText(env.getNbFlagged()+"/"+env.getTotalMine());
         lbNbFlagged.setHorizontalAlignment(SwingConstants.CENTER);
         lbNbFlagged.setFont(new  Font("Consolas", Font.PLAIN, 36));
         
         Option.add(lbNbFlagged);
-//        JButton bcharger = new JButton("Charger");
-//        
-//        bcharger.addMouseListener(new MouseAdapter () {
-//            @Override
-//            public void mousePressed(MouseEvent arg0) {
-//                super.mouseClicked(arg0);
-//                charge();
-//            }
-//        });
-//        
-//        Option.add(bcharger);
-//        
-//        JButton bsauve = new JButton("Sauvegarde");
-//        
-//        bsauve.addMouseListener(new MouseAdapter () {
-//            @Override
-//            public void mousePressed(MouseEvent arg0) {
-//                super.mouseClicked(arg0);
-//                sauvegarde();
-//            }
-//        });
-//        Option.add(bsauve);
-//        
-//        JButton brm = new JButton("Effacer");
-//        
-//        brm.addMouseListener(new MouseAdapter () {
-//            @Override
-//            public void mousePressed(MouseEvent arg0) {
-//                super.mouseClicked(arg0);
-//                effacer();
-//            }
-//        });
-        
-//        Option.add(brm);
-        /* CREATION DES MENUS DEROULANTS */
-        
-//        ccharge.addItem("canon");
-//        ccharge.addItem("etoile");
-//        ccharge.addItem("pulsar");
-//        ccharge.addItem("prixnobel");
-//        ccharge.addActionListener(new ItemAction2());
-//        Option.add(ccharge);
-        
-        /* TextField pour changer la vitesse */
-//        
-//        textVit = new JTextField(Integer.toString(env.getVitesse()));
-//        
-//        
-//        textVit.addKeyListener( new KeyListener(){
-//
-//                @Override
-//                public void keyPressed(KeyEvent e){
-//
-//                    gestionText(e);
-//                }
-//                @Override
-//                public void keyReleased(KeyEvent e)
-//                {
-//                    
-//                }
-//                
-//                @Override
-//                public void keyTyped(KeyEvent e)
-//                {
-//                    
-//                }
-//        });
-        
-//        Option.add(textVit);
+
         initCaseVue();
         
         ensemble.add(Option,BorderLayout.CENTER);
@@ -327,7 +188,7 @@ public class FenetreP extends JFrame implements Observer {
     class ItemAction2 implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            charge(ccharge.getSelectedItem());
+            //charge(ccharge.getSelectedItem());
         }
     }
     
@@ -351,7 +212,7 @@ public class FenetreP extends JFrame implements Observer {
         }
         pan.setBorder(blackline);
         
-        ensemble.add(pan,BorderLayout.NORTH);
+        ensemble.add(pan,BorderLayout.SOUTH);
         
     }
     
@@ -367,17 +228,6 @@ public class FenetreP extends JFrame implements Observer {
         {
             for (int j = 0; j<largeur; j++)
             {
-                /*if (env.tabCases[i][j].getEtatCourant())
-                {
-                    
-                    tabCasesVue[i*largeur+j].setBackground(Color.YELLOW);
-                    int n = i*largeur+j;                   
-                }
-                else
-                {
-                    tabCasesVue[i*largeur+j].setBackground(Color.GRAY);
-                    
-                }*/
                 Case temp = env.tabCases[i][j];
                 if (temp.isOpen()) {
                     tabCasesVue[i*largeur+j].openedView(temp);
@@ -389,15 +239,7 @@ public class FenetreP extends JFrame implements Observer {
                 
             }
         }
-        
-        if (env.getPause())
-        {
-            bPlayPause.setText("Play");
-        }
-        else
-        {
-            bPlayPause.setText("Pause");
-        }
+
         lbTimer.setText(Integer.toString(env.getTimer()));
         lbNbFlagged.setText(Integer.toString(env.getNbFlagged())+"/"+env.getTotalMine());
        

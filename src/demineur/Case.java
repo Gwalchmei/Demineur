@@ -37,52 +37,52 @@ public class Case {
     
     public void cliqueSouris(Environnement env, boolean mainclick)
     {
-        if(!env.getPause()) {
-            if(!env.getDemarre()) { env.demarrer(); }
-            if (mainclick) {
-                if (etatCourant == Case.CLOSE) {
-                    etatCourant = Case.OPEN;
-                    env.addOpened();
-                    if (!mined) {
-                        Case[] voisins = env.getVoisins(this);
-                        int _nbMined = 0;
-                        for (int i = 0; i < voisins.length; i++){
-                            if (voisins[i].getMined()) { _nbMined++; }
-                        }
-                        nbMined = _nbMined;
-                        if (nbMined == 0){
-                            cliqueVoisins(env, voisins);
-                        }
-                    } else {
-                        env.setLost(true);
-                    }
-                } else if (etatCourant == Case.OPEN && nbMined > 0) {
+        if(!env.getDemarre()) { env.demarrer(); }
+        if (mainclick) {
+            if (etatCourant == Case.CLOSE) {
+                etatCourant = Case.OPEN;
+                env.addOpened();
+                if (!mined) {
                     Case[] voisins = env.getVoisins(this);
-                    Case currentVoisin = null;
-                    int _nbFlagged = 0;
-                    boolean[] closedCase = new boolean[8];
-                    for (int i = 0; i < voisins.length; i++){
-                        currentVoisin = voisins[i];
-                        if (currentVoisin.isFlagged()) { _nbFlagged++; }
-                        closedCase[i] = !currentVoisin.isOpen();
+                    int _nbMined = 0;
+                    for (Case voisin : voisins) {
+                        if (voisin.getMined()) {
+                            _nbMined++;
+                        }
                     }
+                    nbMined = _nbMined;
+                    if (nbMined == 0){
+                        cliqueVoisins(env, voisins);
+                    }
+                } else {
+                    env.setLost(true);
+                }
+            } else if (etatCourant == Case.OPEN && nbMined > 0) {
+                Case[] voisins = env.getVoisins(this);
+                Case currentVoisin;
+                int _nbFlagged = 0;
+                boolean[] closedCase = new boolean[8];
+                for (int i = 0; i < voisins.length; i++){
+                    currentVoisin = voisins[i];
+                    if (currentVoisin.isFlagged()) { _nbFlagged++; }
+                    closedCase[i] = !currentVoisin.isOpen();
+                }
 
-                    if (nbMined == _nbFlagged){
-                        for (int i = 0; i < voisins.length; i++){
-                            if (closedCase[i]) {
-                                voisins[i].cliqueSouris(env, true);
-                            }
+                if (nbMined == _nbFlagged){
+                    for (int i = 0; i < voisins.length; i++){
+                        if (closedCase[i]) {
+                            voisins[i].cliqueSouris(env, true);
                         }
                     }
                 }
-            } else if (!mainclick && etatCourant != Case.OPEN) {
-                if (etatCourant == Case.CLOSE) {
-                    etatCourant = Case.FLAGGED;
-                    env.addFlagged();
-                } else {
-                    etatCourant = Case.CLOSE;
-                    env.removeFlagged();
-                }
+            }
+        } else if (!mainclick && etatCourant != Case.OPEN) {
+            if (etatCourant == Case.CLOSE) {
+                etatCourant = Case.FLAGGED;
+                env.addFlagged();
+            } else {
+                etatCourant = Case.CLOSE;
+                env.removeFlagged();
             }
         }
         
@@ -90,8 +90,8 @@ public class Case {
     
     public void cliqueVoisins(Environnement env, Case[] voisins)
     {
-        for (int i = 0; i < voisins.length; i++){
-            voisins[i].cliqueSouris(env, true);
+        for (Case voisin : voisins) {
+            voisin.cliqueSouris(env, true);
         }
     }
     

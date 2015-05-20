@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
 public class Environnement extends Observable implements Runnable {
 
     protected Case[][] tabCases;
-    protected boolean miseenpause;
+    //protected boolean miseenpause;
     protected HashMap<Case, Point> map;
     protected boolean demarre;
     protected int vitesse;
@@ -35,19 +35,40 @@ public class Environnement extends Observable implements Runnable {
     protected int nbOpened;
     protected int nbFlagged;
     protected boolean lost;
+    protected int difficulte;
     
-    public Environnement(int x, int y)
+    static final int EASY = 0;
+    static final int MEDIUM = 1;
+    static final int HARD = 2;
+    
+    public Environnement()
     {
-        initialisation(x,y);
+        initialisation(Environnement.MEDIUM);
     }
     
-    private void initialisation(int x, int y)
+    public void initialisation(int _difficulte)
     {
-        largeur = x;
-        longueur = y;
+        switch(_difficulte) {
+            case Environnement.EASY:
+                largeur = longueur = 8;
+                totalMine = 10;
+                break;
+            case Environnement.MEDIUM:
+                largeur = longueur = 16;
+                totalMine = 40;
+                break;
+            case Environnement.HARD:
+                largeur = 31;
+                longueur = 16;
+                totalMine = 99;
+            default:
+                largeur = longueur = 30;
+                totalMine = 99;
+                break;
+        }
+        difficulte = _difficulte;
         map = new HashMap(largeur*longueur);
         tabCases = new Case[largeur][longueur];
-        totalMine = largeur*longueur/20;
         int nbMine = 0;
         for (int i = 0; i<largeur; i++)
         {
@@ -71,9 +92,11 @@ public class Environnement extends Observable implements Runnable {
             }
         }
         
-        miseenpause = demarre = lost = false; 
+        /*miseenpause = */demarre = lost = false; 
         vitesse = 1000;
         nbOpened = nbFlagged = timer = 0;
+        setChanged();
+        notifyObservers();
     }
     
     public int getLongueur()
@@ -195,7 +218,7 @@ public class Environnement extends Observable implements Runnable {
         return voisins;
     }
     
-    public void setPause(boolean p)
+    /*public void setPause(boolean p)
     {
         miseenpause = p;
         
@@ -205,7 +228,7 @@ public class Environnement extends Observable implements Runnable {
     public boolean getPause()
     {
         return miseenpause;
-    }
+    }*/
     public void effacer()
     {
         for (int i = 0; i<tabCases.length; i++)
@@ -217,16 +240,16 @@ public class Environnement extends Observable implements Runnable {
         }
     }
     
-    synchronized public void setActif()
+    /*synchronized public void setActif()
     {
         miseenpause = false;
         notifyAll();
-    }
+    }*/
     
     synchronized public void demarrer()
     {
         demarre = true;
-        miseenpause = false;
+        //miseenpause = false;
         notifyAll();
     }
     
@@ -247,9 +270,11 @@ public class Environnement extends Observable implements Runnable {
                         Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+            } else {
+                timer++;
             }
             
-            if(miseenpause){
+            /*if(miseenpause){
                 synchronized(this){
                     try {
                         wait();
@@ -257,16 +282,18 @@ public class Environnement extends Observable implements Runnable {
                         Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }
+            } else {
+                timer++;
+            }*/
             
             try {
                 Thread.currentThread().sleep(vitesse);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
             }
-            timer++;
+            
             if (nbOpened+totalMine == largeur*longueur || lost) {
-                initialisation(largeur, longueur);
+                initialisation(difficulte);
             }
             //System.out.println("Je me réveille et je notifie les mises à jours");
             setChanged();
@@ -309,6 +336,11 @@ public class Environnement extends Observable implements Runnable {
     public void setLost(boolean flag)
     {
         lost = flag;
+    }
+    
+    public int getDifficulte()
+    {
+        return difficulte;
     }
 }
 
