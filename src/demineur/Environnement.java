@@ -36,6 +36,7 @@ public class Environnement extends Observable implements Runnable {
     protected int nbOpened;
     protected int nbFlagged;
     protected boolean lost;
+    protected boolean gameOver;
     protected int difficulte;
     protected int mode;
     
@@ -52,6 +53,7 @@ public class Environnement extends Observable implements Runnable {
     
     public void initialisation(int _difficulte, int _mode)
     {
+        gameOver = false;
         difficulte = _difficulte;
         mode = _mode;
         if (mode == Environnement.SQUARE) {
@@ -340,12 +342,19 @@ public class Environnement extends Observable implements Runnable {
             }
             
             if (nbOpened+totalMine == largeur*longueur || lost) {
+                this.gameOver(!lost);
                 initialisation(difficulte, mode);
             }
             //System.out.println("Je me réveille et je notifie les mises à jours");
             setChanged();
             notifyObservers();
         }
+    }
+    
+    public void gameOver(boolean flag) {
+        gameOver = true;
+        setChanged();
+        notifyObservers();
     }
     
     public void cliqueSouris(int x, int y, boolean mainclick)
@@ -393,6 +402,16 @@ public class Environnement extends Observable implements Runnable {
     public int getMode()
     {
         return mode;
+    }
+    
+    public void showMines() {
+        for(Case[] row : tabCases) {
+            for(Case c : row) {
+                if(c.getMined()) {
+                    c.setEtatCourant(Case.OPEN);
+                }
+            }
+        }
     }
 }
 

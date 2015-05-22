@@ -86,10 +86,31 @@ public class CaseVue extends JLabel{
     
     public void openedView(Case c) {
         Color bgColor = new Color(0xF3F3F3);
+        Color darkBlue = new Color(0x0C165C);
+        Color brown = new Color(0x5C380D);
         setBackground(bgColor);
         if (c.getNbMined() != 0) {
             setText(Integer.toString(c.getNbMined()));
-            setForeground(Color.BLACK);
+            switch(c.getNbMined()) {
+                case 1: setForeground(Color.BLUE);
+                        break;
+                case 2: setForeground(Color.GREEN);
+                        break;
+                case 3: setForeground(Color.RED);
+                        break;
+                case 4: setForeground(darkBlue);
+                        break;
+                case 5: setForeground(brown);
+                        break;
+                case 6: setForeground(Color.CYAN);
+                        break;
+                case 7: setForeground(Color.BLACK);
+                        break;
+                case 8: setForeground(Color.GRAY);
+                        break;
+                default: setForeground(Color.BLACK);
+                         break;
+            }
         }
         if (c.getMined()){
             Color iconColor = new Color(0xEE1700);

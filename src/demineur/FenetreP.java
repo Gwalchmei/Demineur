@@ -294,10 +294,27 @@ public class FenetreP extends JFrame implements Observer {
                 
             }
         }
+        
+        if(env.gameOver) {
+            String msg;
+            String time = Integer.toString(env.timer);
+
+            if(!env.lost) {
+                msg = "VICTOIRE !";
+            } else {
+                msg = "DÉFAITE...";
+                
+            }
+            displayGameOverDialog(msg, time);
+        }
 
         lbTimer.setText(Integer.toString(env.getTimer()));
         lbNbFlagged.setText(Integer.toString(env.getNbFlagged())+"/"+env.getTotalMine());
        
+    }
+    
+    public void displayGameOverDialog(String msg, String time) {
+        JOptionPane.showMessageDialog(ensemble, msg + "\nTemps : " + time + "s", "Game Over", JOptionPane.PLAIN_MESSAGE);
     }
     
     
