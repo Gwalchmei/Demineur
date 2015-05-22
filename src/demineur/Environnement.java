@@ -342,5 +342,15 @@ public class Environnement extends Observable implements Runnable {
     {
         return difficulte;
     }
+    
+    public void showMines() {
+        for(Case[] row : tabCases) {
+            for(Case c : row) {
+                if(c.getMined()) {
+                    c.setEtatCourant(Case.OPEN);
+                }
+            }
+        }
+    }
 }
 

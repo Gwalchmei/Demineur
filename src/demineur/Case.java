@@ -55,6 +55,7 @@ public class Case {
                         cliqueVoisins(env, voisins);
                     }
                 } else {
+                    env.showMines();
                     env.setLost(true);
                 }
             } else if (etatCourant == Case.OPEN && nbMined > 0) {
