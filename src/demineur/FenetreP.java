@@ -319,3 +319,5 @@ public class FenetreP extends JFrame implements Observer {
     
     
 }
+
+/* Triangle définit en tant que JPanel redefinir getX getY et clique*/
