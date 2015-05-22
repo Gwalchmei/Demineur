@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static java.lang.Integer.max;
 // Pour la gestion XML
 import java.io.*;
 import java.util.Iterator;
@@ -36,46 +37,92 @@ public class Environnement extends Observable implements Runnable {
     protected int nbFlagged;
     protected boolean lost;
     protected int difficulte;
+    protected int mode;
     
     static final int EASY = 0;
     static final int MEDIUM = 1;
     static final int HARD = 2;
+    static final int SQUARE = 0;
+    static final int TRIANGLE = 1;
     
     public Environnement()
     {
-        initialisation(Environnement.MEDIUM);
+        initialisation(Environnement.EASY, Environnement.TRIANGLE);
     }
     
-    public void initialisation(int _difficulte)
+    public void initialisation(int _difficulte, int _mode)
     {
-        switch(_difficulte) {
-            case Environnement.EASY:
-                largeur = longueur = 8;
-                totalMine = 10;
-                break;
-            case Environnement.MEDIUM:
-                largeur = longueur = 16;
-                totalMine = 40;
-                break;
-            case Environnement.HARD:
-                largeur = 31;
-                longueur = 16;
-                totalMine = 99;
-            default:
-                largeur = longueur = 30;
-                totalMine = 99;
-                break;
-        }
         difficulte = _difficulte;
-        map = new HashMap(largeur*longueur);
+        mode = _mode;
+        if (mode == Environnement.SQUARE) {
+            switch(difficulte) {
+                case Environnement.EASY:
+                    largeur = longueur = 8;
+                    totalMine = 10;
+                    break;
+                case Environnement.MEDIUM:
+                    largeur = longueur = 16;
+                    totalMine = 40;
+                    break;
+                case Environnement.HARD:
+                    largeur = 31;
+                    longueur = 16;
+                    totalMine = 99;
+                    break;
+                default:
+                    largeur = longueur = 30;
+                    totalMine = 99;
+                    break;
+            }
+        } else {
+            switch(difficulte) {
+                case Environnement.EASY:
+                    largeur = 4;
+                    longueur = 7;
+                    totalMine = 10;
+                    break;
+                case Environnement.MEDIUM:
+                    largeur = 8;
+                    longueur = 15;
+                    totalMine = 40;
+                    break;
+                case Environnement.HARD:
+                    largeur = 30;
+                    longueur = 30;
+                    totalMine = 99;
+                    break;
+                default:
+                    largeur = longueur = 30;
+                    totalMine = 10;
+                    break;
+            }
+        }
+        int max = max(largeur, longueur);
+        map = new HashMap(max*max);
         tabCases = new Case[largeur][longueur];
         int nbMine = 0;
-        for (int i = 0; i<largeur; i++)
-        {
-            for(int j = 0; j<longueur; j++)
+        if (mode == Environnement.SQUARE) {
+            for (int i = 0; i<largeur; i++)
             {
-                tabCases[i][j] = new Case();
-                map.put(tabCases[i][j], new Point(i,j));
+                for(int j = 0; j<longueur; j++)
+                {
+                    tabCases[i][j] = new Case();
+                    map.put(tabCases[i][j], new Point(i,j));
+                }
+            }
+        } else {
+            for (int i = 0; i<largeur; i++)
+            {
+                for(int j = 0; j<longueur; j++)
+                {
+                    if (j >= Math.floor(longueur/2)-i && j <= Math.floor(longueur/2)+i) {
+                    tabCases[i][j] = new Case();
+                    map.put(tabCases[i][j], new Point(i,j));
+                    } else {
+                        tabCases[i][j] = null;
+                        addOpened();
+                    }
+                }
             }
         }
         while (nbMine < totalMine) {
@@ -84,7 +131,7 @@ public class Environnement extends Observable implements Runnable {
                 for(int j = 0; j<longueur; j++)
                 {
                     Case current = tabCases[i][j];
-                    if (Math.random() < 0.1 && nbMine < totalMine && !current.getMined()) {
+                    if (current != null && Math.random() < 0.1 && nbMine < totalMine && !current.getMined()) {
                         current.setMined();
                         nbMine++;
                     }
@@ -293,7 +340,7 @@ public class Environnement extends Observable implements Runnable {
             }
             
             if (nbOpened+totalMine == largeur*longueur || lost) {
-                initialisation(difficulte);
+                initialisation(difficulte, mode);
             }
             //System.out.println("Je me réveille et je notifie les mises à jours");
             setChanged();
@@ -341,6 +388,11 @@ public class Environnement extends Observable implements Runnable {
     public int getDifficulte()
     {
         return difficulte;
+    }
+    
+    public int getMode()
+    {
+        return mode;
     }
 }
 

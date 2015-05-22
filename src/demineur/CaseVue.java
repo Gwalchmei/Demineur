@@ -115,17 +115,12 @@ public class CaseVue extends JLabel{
     }
     
     public void coloriserMotif() {
-        int x = indice/largeur;
-        int y = indice%largeur;
-        vue.tabCasesVue[indice].setBorder(BorderFactory.createLineBorder(Color.red));
-        
+        setBorder(BorderFactory.createLineBorder(Color.red));       
     }
     
     public void effacerMotif() {
-        int x = indice/largeur;
-        int y = indice%largeur;
         Color borderColor = new Color(0x393638);
-        vue.tabCasesVue[indice].setBorder(BorderFactory.createLineBorder(borderColor));
+        setBorder(BorderFactory.createLineBorder(borderColor));
     }
     
     public void destroy()

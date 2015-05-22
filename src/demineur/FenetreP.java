@@ -16,6 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import static java.lang.Integer.max;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.BorderFactory;
@@ -69,7 +70,7 @@ public class FenetreP extends JFrame implements Observer {
     
     public void lancerLaPartie()
     {
-        env.initialisation(env.getDifficulte());
+        env.initialisation(env.getDifficulte(), env.getMode());
     }
 
     public void effacer()
@@ -114,7 +115,7 @@ public class FenetreP extends JFrame implements Observer {
             @Override
             public void mousePressed(MouseEvent e){
                 super.mouseClicked(e);
-                env.initialisation(Environnement.EASY);
+                env.initialisation(Environnement.EASY, env.getMode());
             }
         });
         
@@ -123,7 +124,7 @@ public class FenetreP extends JFrame implements Observer {
             @Override
             public void mousePressed(MouseEvent e){
                 super.mouseClicked(e);
-                env.initialisation(Environnement.MEDIUM);
+                env.initialisation(Environnement.MEDIUM, env.getMode());
             }
         });
         
@@ -132,15 +133,39 @@ public class FenetreP extends JFrame implements Observer {
             @Override
             public void mousePressed(MouseEvent e){
                 super.mouseClicked(e);
-                env.initialisation(Environnement.HARD);
+                env.initialisation(Environnement.HARD, env.getMode());
             }
         });
         
         mDifficulte.add(miEasy);
         mDifficulte.add(miMedium);
         mDifficulte.add(miHard);
+        
+        JMenu mMode = new JMenu("Mode");
+        
+        JMenuItem miSquare = new JMenuItem("Carré");
+        miSquare.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                super.mouseClicked(e);
+                env.initialisation(env.getDifficulte(), Environnement.SQUARE);
+            }
+        });
+        
+        JMenuItem miTriangle = new JMenuItem("Triangle");
+        miTriangle.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                super.mouseClicked(e);
+                env.initialisation(env.getDifficulte(), Environnement.TRIANGLE);
+            }
+        });
+        
+        mMode.add(miSquare);
+        mMode.add(miTriangle);
         jm.add(m);
         jm.add(mDifficulte);
+        jm.add(mMode);
         
         setJMenuBar(jm);
         setTitle("Démineur Roger Thomas");
@@ -196,19 +221,47 @@ public class FenetreP extends JFrame implements Observer {
     {
         longueur = env.getLongueur();
         largeur = env.getLargeur();
-        tabCasesVue = new CaseVue[longueur*largeur];
+        int max = max(largeur, longueur);
+        tabCasesVue = new CaseVue[max*max+max];
         
-        pan = new JPanel (new GridLayout(longueur,largeur));
+        pan = new JPanel (new GridLayout(largeur,longueur));
         Color borderColor = new Color(0x393638);
         Border blackline = BorderFactory.createLineBorder(borderColor, 1);
         
-        for(int i = 0; i<(longueur*largeur); i++)
+        /*for(int i = 0; i<(longueur*largeur); i++)
         {
             CaseVue c = new CaseVue(i, largeur, env, this);
             c.setBorder(blackline);
             
             pan.add(c);
             tabCasesVue[i]=c;
+        }*/
+        
+        for (int i= 0; i<largeur; i++)
+        {
+            for (int j = 0; j<longueur; j++)
+            {
+                Case temp = env.tabCases[i][j];
+                int ind = i*largeur+j;
+                if (temp != null) {
+                    
+                    CaseVue c = new CaseVue(ind, largeur, env, this);
+                    c.setBorder(blackline);
+                    
+                    c.setText(Integer.toString(ind));
+
+                    pan.add(c);
+                    tabCasesVue[ind]=c;
+                } else {
+                    JLabel empty = new JLabel();
+                    Color bgColor = new Color(0xFF0000);
+                    empty.setBackground(bgColor);
+                    empty.setText(" ");
+                    empty.setOpaque(true);
+                    pan.add(empty);
+                    tabCasesVue[ind] = null;
+                }
+            }
         }
         pan.setBorder(blackline);
         
@@ -224,17 +277,19 @@ public class FenetreP extends JFrame implements Observer {
             initCaseVue();
             pack();
         }
-        for (int i= 0; i<longueur; i++)
+        for (int i= 0; i<largeur; i++)
         {
-            for (int j = 0; j<largeur; j++)
+            for (int j = 0; j<longueur; j++)
             {
                 Case temp = env.tabCases[i][j];
-                if (temp.isOpen()) {
-                    tabCasesVue[i*largeur+j].openedView(temp);
-                } else if (temp.isFlagged()) {
-                    tabCasesVue[i*largeur+j].flaggedView();
-                } else {
-                    tabCasesVue[i*largeur+j].defaultView();
+                if (temp != null){
+                    if (temp.isOpen()) {
+                        tabCasesVue[i*largeur+j].openedView(temp);
+                    } else if (temp.isFlagged()) {
+                        tabCasesVue[i*largeur+j].flaggedView();
+                    } else {
+                        tabCasesVue[i*largeur+j].defaultView();
+                    }
                 }
                 
             }

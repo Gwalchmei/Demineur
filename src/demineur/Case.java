@@ -46,7 +46,7 @@ public class Case {
                     Case[] voisins = env.getVoisins(this);
                     int _nbMined = 0;
                     for (Case voisin : voisins) {
-                        if (voisin.getMined()) {
+                        if (voisin != null && voisin.getMined()) {
                             _nbMined++;
                         }
                     }
@@ -64,8 +64,17 @@ public class Case {
                 boolean[] closedCase = new boolean[8];
                 for (int i = 0; i < voisins.length; i++){
                     currentVoisin = voisins[i];
-                    if (currentVoisin.isFlagged()) { _nbFlagged++; }
-                    closedCase[i] = !currentVoisin.isOpen();
+                    if (currentVoisin != null) {
+                    
+                        if (currentVoisin.isFlagged()) { 
+                            _nbFlagged++; 
+                        }
+                        closedCase[i] = !currentVoisin.isOpen();
+                    } else {
+                        closedCase[i] = false;
+                    }
+                    
+                      
                 }
 
                 if (nbMined == _nbFlagged){
@@ -91,7 +100,7 @@ public class Case {
     public void cliqueVoisins(Environnement env, Case[] voisins)
     {
         for (Case voisin : voisins) {
-            voisin.cliqueSouris(env, true);
+            if(voisin != null) {voisin.cliqueSouris(env, true);}
         }
     }
     
