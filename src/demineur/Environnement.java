@@ -35,6 +35,7 @@ public class Environnement extends Observable implements Runnable {
     protected int nbOpened;
     protected int nbFlagged;
     protected boolean lost;
+    protected boolean gameOver;
     protected int difficulte;
     
     static final int EASY = 0;
@@ -48,6 +49,7 @@ public class Environnement extends Observable implements Runnable {
     
     public void initialisation(int _difficulte)
     {
+        gameOver = false;
         switch(_difficulte) {
             case Environnement.EASY:
                 largeur = longueur = 8;
@@ -293,12 +295,19 @@ public class Environnement extends Observable implements Runnable {
             }
             
             if (nbOpened+totalMine == largeur*longueur || lost) {
+                this.gameOver(!lost);
                 initialisation(difficulte);
             }
             //System.out.println("Je me réveille et je notifie les mises à jours");
             setChanged();
             notifyObservers();
         }
+    }
+    
+    public void gameOver(boolean flag) {
+        gameOver = true;
+        setChanged();
+        notifyObservers();
     }
     
     public void cliqueSouris(int x, int y, boolean mainclick)
