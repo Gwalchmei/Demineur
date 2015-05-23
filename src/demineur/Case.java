@@ -24,11 +24,11 @@ public class Case {
     
     /* Type */
     static int NORMAL = 0;
-    static int WALL = 1;
+    static int WALL = 1; // pour les bords de l'écran (facilite la recherche de voisins)
     
     /* Sens */
-    static boolean UP = true;
-    static boolean DOWN = false;
+    static boolean UP = true; // = pointe vers le haut si triangle
+    static boolean DOWN = false; //     "       bas     "
     
     public Case(int _type, boolean _sens)
     {
