@@ -39,7 +39,7 @@ public class FenetreP extends JFrame implements Observer {
     protected Environnement env;
     protected int longueur;
     protected int largeur;
-    protected CaseVue tabCasesVue[];
+    protected CaseVue tabCasesVue[][];
     protected JComboBox ccharge = new JComboBox();
     protected JTextField textVit = new JTextField();
     protected JLabel lbTimer = new JLabel();
@@ -222,7 +222,7 @@ public class FenetreP extends JFrame implements Observer {
         longueur = env.getLongueur();
         largeur = env.getLargeur();
         int max = max(largeur, longueur);
-        tabCasesVue = new CaseVue[max*max+max];
+        tabCasesVue = new CaseVue[largeur][longueur];
         
         pan = new JPanel (new GridLayout(largeur,longueur));
         Color borderColor = new Color(0x393638);
@@ -242,25 +242,19 @@ public class FenetreP extends JFrame implements Observer {
             for (int j = 0; j<longueur; j++)
             {
                 Case temp = env.tabCases[i][j];
-                int ind = i*largeur+j;
-                if (temp != null) {
                     
-                    CaseVue c = new CaseVue(ind, largeur, env, this);
-                    c.setBorder(blackline);
-                    
-                    c.setText(Integer.toString(ind));
-
-                    pan.add(c);
-                    tabCasesVue[ind]=c;
+                CaseVue c = new CaseVue(i, j, env, this);
+                c.setBorder(blackline);
+                pan.add(c);
+                tabCasesVue[i][j]=c;
+                if (temp.isOpen()) {
+                    c.openedView(temp);
                 } else {
-                    JLabel empty = new JLabel();
-                    Color bgColor = new Color(0xFF0000);
-                    empty.setBackground(bgColor);
-                    empty.setText(" ");
-                    empty.setOpaque(true);
-                    pan.add(empty);
-                    tabCasesVue[ind] = null;
+                    c.defaultView(temp.getSens());
                 }
+
+                
+                
             }
         }
         pan.setBorder(blackline);
@@ -282,15 +276,15 @@ public class FenetreP extends JFrame implements Observer {
             for (int j = 0; j<longueur; j++)
             {
                 Case temp = env.tabCases[i][j];
-                if (temp != null){
-                    if (temp.isOpen()) {
-                        tabCasesVue[i*largeur+j].openedView(temp);
-                    } else if (temp.isFlagged()) {
-                        tabCasesVue[i*largeur+j].flaggedView();
-                    } else {
-                        tabCasesVue[i*largeur+j].defaultView();
-                    }
+                
+                if (temp.isOpen()) {
+                    tabCasesVue[i][j].openedView(temp);
+                } else if (temp.isFlagged()) {
+                    tabCasesVue[i][j].flaggedView();
+                } else {
+                    tabCasesVue[i][j].defaultView(temp.getSens());
                 }
+                
                 
             }
         }

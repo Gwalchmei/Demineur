@@ -48,7 +48,7 @@ public class Environnement extends Observable implements Runnable {
     
     public Environnement()
     {
-        initialisation(Environnement.EASY, Environnement.TRIANGLE);
+        initialisation(Environnement.MEDIUM, Environnement.TRIANGLE);
     }
     
     public void initialisation(int _difficulte, int _mode)
@@ -59,39 +59,39 @@ public class Environnement extends Observable implements Runnable {
         if (mode == Environnement.SQUARE) {
             switch(difficulte) {
                 case Environnement.EASY:
-                    largeur = longueur = 8;
+                    largeur = longueur = 10;
                     totalMine = 10;
                     break;
                 case Environnement.MEDIUM:
-                    largeur = longueur = 16;
+                    largeur = longueur = 18;
                     totalMine = 40;
                     break;
                 case Environnement.HARD:
-                    largeur = 31;
-                    longueur = 16;
+                    largeur = 18;
+                    longueur = 33;
                     totalMine = 99;
                     break;
                 default:
-                    largeur = longueur = 30;
+                    largeur = longueur = 33;
                     totalMine = 99;
                     break;
             }
         } else {
             switch(difficulte) {
                 case Environnement.EASY:
-                    largeur = 4;
-                    longueur = 7;
-                    totalMine = 10;
+                    largeur = 9;
+                    longueur = 13;
+                    totalMine = 5;
                     break;
                 case Environnement.MEDIUM:
-                    largeur = 8;
-                    longueur = 15;
-                    totalMine = 40;
+                    largeur = 12;
+                    longueur = 19;
+                    totalMine = 10;
                     break;
                 case Environnement.HARD:
-                    largeur = 30;
-                    longueur = 30;
-                    totalMine = 99;
+                    largeur = 18;
+                    longueur = 31;
+                    totalMine = 15;
                     break;
                 default:
                     largeur = longueur = 30;
@@ -99,6 +99,7 @@ public class Environnement extends Observable implements Runnable {
                     break;
             }
         }
+        nbOpened = 0;
         int max = max(largeur, longueur);
         map = new HashMap(max*max);
         tabCases = new Case[largeur][longueur];
@@ -108,22 +109,31 @@ public class Environnement extends Observable implements Runnable {
             {
                 for(int j = 0; j<longueur; j++)
                 {
-                    tabCases[i][j] = new Case();
+                    if (j < 1 || i < 1 || j > longueur-2 || i > largeur-2) {
+                        tabCases[i][j] = new Case(Case.WALL, Case.UP);
+                        addOpened();
+                    } else {
+                        tabCases[i][j] = new Case(Case.NORMAL, Case.UP);
+                    }
+                    
                     map.put(tabCases[i][j], new Point(i,j));
                 }
             }
         } else {
+            boolean lastSens = Case.DOWN;
             for (int i = 0; i<largeur; i++)
             {
                 for(int j = 0; j<longueur; j++)
                 {
-                    if (j >= Math.floor(longueur/2)-i && j <= Math.floor(longueur/2)+i) {
-                    tabCases[i][j] = new Case();
-                    map.put(tabCases[i][j], new Point(i,j));
+                    if (j >= Math.floor(longueur/2)-i+2 && j <= Math.floor(longueur/2)+i-2 && i < largeur-2) {
+                        lastSens = !lastSens;
+                        tabCases[i][j] = new Case(Case.NORMAL, lastSens);
+                        
                     } else {
-                        tabCases[i][j] = null;
+                        tabCases[i][j] = new Case(Case.WALL, Case.UP);
                         addOpened();
                     }
+                    map.put(tabCases[i][j], new Point(i,j));
                 }
             }
         }
@@ -133,7 +143,7 @@ public class Environnement extends Observable implements Runnable {
                 for(int j = 0; j<longueur; j++)
                 {
                     Case current = tabCases[i][j];
-                    if (current != null && Math.random() < 0.1 && nbMine < totalMine && !current.getMined()) {
+                    if (current.getType() != Case.WALL && Math.random() < 0.1 && nbMine < totalMine && !current.getMined()) {
                         current.setMined();
                         nbMine++;
                     }
@@ -143,7 +153,7 @@ public class Environnement extends Observable implements Runnable {
         
         /*miseenpause = */demarre = lost = false; 
         vitesse = 1000;
-        nbOpened = nbFlagged = timer = 0;
+        nbFlagged = timer = 0;
         setChanged();
         notifyObservers();
     }
@@ -177,85 +187,21 @@ public class Environnement extends Observable implements Runnable {
         
         int x = (int) map.get(c).getX();
         int y = (int) map.get(c).getY();
-        
-        // La case est sur la première ligne
-        if (x == 0)
-        {
-            if (y==0)
-            {
-                voisins = new Case[3];
-                voisins[0] = tabCases[0][1];
-                voisins[1] = tabCases[1][0];
-                voisins[2] = tabCases[1][1];
-                return voisins;
-            }
-            if (y == (tabCases[0].length)-1)
-            {
-                voisins = new Case[3];
-                voisins[0] = tabCases[0][y-1];
-                voisins[1] = tabCases[1][y];
-                voisins[2] = tabCases[1][y-1];
-                return voisins;
-            }
-            voisins = new Case[5];
-            voisins[0] = tabCases[0][y-1];
-            voisins[1] = tabCases[0][y+1];
-            voisins[2] = tabCases[1][y];
-            voisins[3] = tabCases[1][y-1];
-            voisins[4] = tabCases[1][y+1];
-            return voisins;
+
+        if (mode == Environnement.TRIANGLE){
+           voisins = new Case[12];
+           voisins[8] = tabCases[x][y-2];
+           voisins[9] = tabCases[x][y+2];
+           if (c.getSens() == Case.UP) {
+               voisins[10] = tabCases[x+1][y-2];
+               voisins[11] = tabCases[x+1][y+2];
+           } else {
+               voisins[10] = tabCases[x-1][y-2];
+               voisins[11] = tabCases[x-1][y+2];
+           }
+        } else {
+            voisins = new Case[8];
         }
-        // la case est sur la derniere ligne
-        if (x == (tabCases.length)-1)
-        {
-            if (y==0)
-            {
-                voisins = new Case[3];
-                voisins[0] = tabCases[x][1];
-                voisins[1] = tabCases[x-1][0];
-                voisins[2] = tabCases[x-1][1];
-                return voisins;
-            }
-            if (y == (tabCases[0].length)-1)
-            {
-                voisins = new Case[3];
-                voisins[0] = tabCases[x][y-1];
-                voisins[1] = tabCases[x-1][y];
-                voisins[2] = tabCases[x-1][y-1];
-                return voisins;
-            }
-            voisins = new Case[5];
-            voisins[0] = tabCases[x][y-1];
-            voisins[1] = tabCases[x][y+1];
-            voisins[2] = tabCases[x-1][y];
-            voisins[3] = tabCases[x-1][y-1];
-            voisins[4] = tabCases[x-1][y+1];
-            return voisins;
-        }
-        // la case est sur la premiere colonne
-        if (y==0)
-        {
-            voisins = new Case[5];
-            voisins[0] = tabCases[x-1][y];
-            voisins[1] = tabCases[x+1][y];
-            voisins[2] = tabCases[x-1][y+1];
-            voisins[3] = tabCases[x][y+1];
-            voisins[4] = tabCases[x+1][y+1];
-            return voisins;
-        }
-        // la case est sur la dernière colonne
-        if (y==(tabCases[0].length)-1)
-        {
-            voisins = new Case[5];
-            voisins[0] = tabCases[x-1][y];
-            voisins[1] = tabCases[x+1][y];
-            voisins[2] = tabCases[x-1][y-1];
-            voisins[3] = tabCases[x][y-1];
-            voisins[4] = tabCases[x+1][y-1];
-            return voisins;
-        }
-        // sinon on est en plein milieu
-        voisins = new Case[8];
         voisins[0] = tabCases[x-1][y-1];
         voisins[1] = tabCases[x-1][y];
         voisins[2] = tabCases[x-1][y+1];
@@ -367,6 +313,7 @@ public class Environnement extends Observable implements Runnable {
     synchronized public void addOpened()
     {
         nbOpened++;
+        System.out.println((nbOpened+totalMine)+"/"+(largeur*longueur));
     }
     
     public int getNbFlagged()

@@ -19,8 +19,8 @@ import javax.swing.SwingConstants;
  */
 public class CaseVue extends JLabel{
     /* indice correspond à l'indice de la CaseVue dans le tableau de la fenetre, largeur correspond à la largeur du tableau de l'environnement */
-    private int indice;
     private int largeur;
+    private int longueur;
     private Environnement env;
     private FenetreP vue;
     protected MouseAdapter m;
@@ -41,13 +41,13 @@ public class CaseVue extends JLabel{
         return new Dimension(20, 20);
     }
     
-    public CaseVue(int _indice, int _largeur, Environnement _env, FenetreP _vue) {
+    public CaseVue(int _largeur, int _longueur, Environnement _env, FenetreP _vue) {
         super();
         
-        defaultView();
+        defaultView(false);
         
-        indice = _indice;
         largeur = _largeur;
+        longueur = _longueur;
         env = _env;
         vue = _vue;
         
@@ -76,16 +76,25 @@ public class CaseVue extends JLabel{
         
     }
     
-    public final void defaultView(){
+    public final void defaultView(boolean s){
         Color bgColor = new Color(0x5a5a5a);
         setBackground(bgColor);
         setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
         setHorizontalAlignment(SwingConstants.CENTER);
-        setText(" ");
+        if(s) {
+            setText("U");
+        } else {
+            setText("D");
+        }
+        //setText(" ");
     }
     
     public void openedView(Case c) {
         Color bgColor = new Color(0xF3F3F3);
+        if (c.getType() == Case.WALL) {
+            bgColor = new Color(0xFF0000);
+            setText(" ");
+        }
         Color darkBlue = new Color(0x0C165C);
         Color brown = new Color(0x5C380D);
         setBackground(bgColor);
@@ -130,9 +139,7 @@ public class CaseVue extends JLabel{
         int x;
         int y;
         
-        x = indice/largeur;
-        y = indice%largeur;
-        env.cliqueSouris(x,y,e.getButton() == MouseEvent.BUTTON1 ? true : false);
+        env.cliqueSouris(largeur,longueur,e.getButton() == MouseEvent.BUTTON1 ? true : false);
     }
     
     public void coloriserMotif() {

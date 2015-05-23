@@ -15,15 +15,42 @@ public class Case {
     protected int etatCourant;
     protected boolean mined;
     protected int nbMined;
-    
+    protected int type;
+    protected boolean sens;
+    /* Etat */
     static int CLOSE = 0;
     static int OPEN = 1;
     static int FLAGGED = 2;
     
-    public Case()
+    /* Type */
+    static int NORMAL = 0;
+    static int WALL = 1;
+    
+    /* Sens */
+    static boolean UP = true;
+    static boolean DOWN = false;
+    
+    public Case(int _type, boolean _sens)
     {
         super();
+        type = _type;
+        sens = _sens;
+        if (type == Case.NORMAL) {
         etatCourant = Case.CLOSE;
+        } else {
+            etatCourant = Case.OPEN;
+            nbMined = 0;
+        }
+    }
+    
+    public int getType()
+    {
+        return type;
+    }
+    
+    public boolean getSens()
+    {
+        return sens;
     }
     
     public void setEtatCourant(int e)
@@ -38,7 +65,7 @@ public class Case {
     public void cliqueSouris(Environnement env, boolean mainclick)
     {
         if(!env.getDemarre()) { env.demarrer(); }
-        if (mainclick) {
+        if (mainclick && type != Case.WALL) {
             if (etatCourant == Case.CLOSE) {
                 etatCourant = Case.OPEN;
                 env.addOpened();
@@ -62,7 +89,7 @@ public class Case {
                 Case[] voisins = env.getVoisins(this);
                 Case currentVoisin;
                 int _nbFlagged = 0;
-                boolean[] closedCase = new boolean[8];
+                boolean[] closedCase = new boolean[12];
                 for (int i = 0; i < voisins.length; i++){
                     currentVoisin = voisins[i];
                     if (currentVoisin != null) {
