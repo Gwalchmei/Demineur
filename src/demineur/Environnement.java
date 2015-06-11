@@ -48,57 +48,50 @@ public class Environnement extends Observable implements Runnable {
     
     public Environnement()
     {
-        initialisation(Environnement.MEDIUM, Environnement.TRIANGLE);
+        initialisation(Environnement.MEDIUM, Environnement.SQUARE);
     }
     
     public void initialisation(int _difficulte, int _mode)
     {
-        gameOver = false;
         difficulte = _difficulte;
-        mode = _mode;
-        if (mode == Environnement.SQUARE) {
+        if (_mode == Environnement.SQUARE) {
             switch(difficulte) {
                 case Environnement.EASY:
-                    largeur = longueur = 10;
-                    totalMine = 10;
+                    initialisation(10, 10, 10, _mode);
                     break;
                 case Environnement.MEDIUM:
-                    largeur = longueur = 18;
-                    totalMine = 40;
+                    initialisation(18,18,40, _mode);
                     break;
                 case Environnement.HARD:
-                    largeur = 18;
-                    longueur = 33;
-                    totalMine = 99;
+                    initialisation(18,33,99, _mode);
                     break;
                 default:
-                    largeur = longueur = 33;
-                    totalMine = 99;
+                    initialisation(33,33,99, _mode);
                     break;
             }
         } else {
             switch(difficulte) {
                 case Environnement.EASY:
-                    largeur = 9;
-                    longueur = 13;
-                    totalMine = 5;
+                    initialisation(9,13,5, _mode);
                     break;
                 case Environnement.MEDIUM:
-                    largeur = 12;
-                    longueur = 19;
-                    totalMine = 10;
+                    initialisation(12,19,10, _mode);
                     break;
                 case Environnement.HARD:
-                    largeur = 18;
-                    longueur = 31;
-                    totalMine = 15;
+                    initialisation(18,31,15, _mode);
                     break;
                 default:
-                    largeur = longueur = 30;
-                    totalMine = 10;
+                    initialisation(30,30,10, _mode);
                     break;
             }
         }
+    }
+    
+    public void initialisation(int _largeur, int _longueur, int _totalMine, int _mode) {
+        largeur = _largeur;
+        longueur = _longueur;
+        totalMine = _totalMine;
+        mode = _mode;
         nbOpened = 0;
         int max = max(largeur, longueur);
         map = new HashMap(max*max);
@@ -151,7 +144,7 @@ public class Environnement extends Observable implements Runnable {
             }
         }
         
-        /*miseenpause = */demarre = lost = false; 
+        gameOver = demarre = lost = false; 
         vitesse = 1000;
         nbFlagged = timer = 0;
         setChanged();
@@ -313,7 +306,7 @@ public class Environnement extends Observable implements Runnable {
     synchronized public void addOpened()
     {
         nbOpened++;
-        System.out.println((nbOpened+totalMine)+"/"+(largeur*longueur));
+        //System.out.println((nbOpened+totalMine)+"/"+(largeur*longueur));
     }
     
     public int getNbFlagged()

@@ -89,7 +89,6 @@ public class FenetreP extends JFrame implements Observer {
         mi.addMouseListener(new MouseAdapter () {
             @Override
             public void mousePressed(MouseEvent arg0) {
-                System.out.println("test");
                 super.mouseClicked(arg0);
                 lancerLaPartie();
             }
@@ -137,9 +136,19 @@ public class FenetreP extends JFrame implements Observer {
             }
         });
         
+        JMenuItem miCustom = new JMenuItem("Personnalisée");
+        miCustom.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                super.mouseClicked(e);
+                displayCustomDialog();
+            }
+        });
+        
         mDifficulte.add(miEasy);
         mDifficulte.add(miMedium);
         mDifficulte.add(miHard);
+        mDifficulte.add(miCustom);
         
         JMenu mMode = new JMenu("Mode");
         
@@ -309,6 +318,37 @@ public class FenetreP extends JFrame implements Observer {
     
     public void displayGameOverDialog(String msg, String time) {
         JOptionPane.showMessageDialog(ensemble, msg + "\nTemps : " + time + "s", "Game Over", JOptionPane.PLAIN_MESSAGE);
+    }
+    
+    public void displayCustomDialog() {
+        JTextField xField = new JTextField(5);
+        JTextField yField = new JTextField(5);
+        JTextField mField = new JTextField(5);
+        xField.setText("0");
+        yField.setText("0");
+        mField.setText("0");
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Largeur:"));
+        myPanel.add(xField);
+        myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+        myPanel.add(new JLabel("Hauteur:"));
+        myPanel.add(yField);
+        myPanel.add(new JLabel("Mines:"));
+        myPanel.add(mField);
+
+        int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                 "Choisissez vos dimensions", JOptionPane.OK_CANCEL_OPTION);
+        int xVal, yVal ,mVal;
+        try {
+            xVal = Integer.parseInt(xField.getText());
+            yVal = Integer.parseInt(yField.getText());
+            mVal = Integer.parseInt(mField.getText());
+        } catch(NumberFormatException e) {
+            xVal = yVal = mVal = 0;
+        }
+        if (result == JOptionPane.OK_OPTION && xVal>9 && yVal > 9 && mVal > 4) {
+           env.initialisation(xVal, yVal, mVal, Environnement.SQUARE);
+        }
     }
     
     

@@ -22,14 +22,13 @@ import javax.swing.SwingConstants;
  *
  * @author gauvain
  */
-public class CaseVue extends JPanel{
+public class CaseVue extends JLabel{
     /* indice correspond à l'indice de la CaseVue dans le tableau de la fenetre, largeur correspond à la largeur du tableau de l'environnement */
     private int largeur;
     private int longueur;
     private Environnement env;
     private FenetreP vue;
     protected MouseAdapter m;
-    protected JLabel text;
     protected boolean sens = true;
     
     private static final Color BG = Color.blue;
@@ -65,24 +64,22 @@ public class CaseVue extends JPanel{
 //        }
 //    }
 
-   @Override
-   protected void paintComponent(Graphics g) {
-      super.paintComponent(g);
-      if(type == TRIANGLE) {
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.GREEN);
-
-        // to smooth out the jaggies
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-              RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.fill(trianglePath);  // fill my triangle
-      }
-   }
+//   @Override
+//   protected void paintComponent(Graphics g) {
+//      super.paintComponent(g);
+//      if(type == TRIANGLE) {
+//        Graphics2D g2 = (Graphics2D) g;
+//        g2.setColor(Color.GREEN);
+//
+//        // to smooth out the jaggies
+//        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//              RenderingHints.VALUE_ANTIALIAS_ON);
+//        g2.fill(trianglePath);  // fill my triangle
+//      }
+//   }
     
     public CaseVue(int _largeur, int _longueur, Environnement _env, FenetreP _vue, int _type, boolean _sens) {
         super();
-        
-        text = new JLabel();
         
         defaultView(false);
         
@@ -114,8 +111,7 @@ public class CaseVue extends JPanel{
         };
         addMouseListener(m);
         setOpaque(true);
-        
-        this.add(text);
+
         
         Dimension dim = this.getPreferredSize();
         double W = dim.width;
@@ -132,27 +128,22 @@ public class CaseVue extends JPanel{
     public final void defaultView(boolean s){
         Color bgColor = new Color(0x5a5a5a);
         setBackground(bgColor);
-        text.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
-        text.setHorizontalAlignment(SwingConstants.CENTER);
-        if(s) {
-            text.setText("U");
-        } else {
-            text.setText("D");
-        }
-        //setText(" ");
+        setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
+        setHorizontalAlignment(SwingConstants.CENTER);
+        setText(" ");
     }
     
     public void openedView(Case c) {
         Color bgColor = new Color(0xF3F3F3);
         if (c.getType() == Case.WALL) {
-            bgColor = new Color(0xFF0000);
-            text.setText(" ");
+            bgColor = new Color(0x2a2a2a);
+            setText(" ");
         }
         Color darkBlue = new Color(0x0C165C);
         Color brown = new Color(0x5C380D);
         setBackground(bgColor);
         if (c.getNbMined() != 0) {
-            text.setText(Integer.toString(c.getNbMined()));
+            setText(Integer.toString(c.getNbMined()));
             switch(c.getNbMined()) {
                 case 1: setForeground(Color.BLUE);
                         break;
@@ -176,22 +167,18 @@ public class CaseVue extends JPanel{
         }
         if (c.getMined()){
             Color iconColor = new Color(0xEE1700);
-            text.setText("\uD83D\uDCA3");
+            setText("\uD83D\uDCA3");
             setForeground(iconColor);
         }
     }
     
     public void flaggedView() {
         Color iconColor = new Color(0xEE1700);
-        text.setText("\u2691");
+        setText("\u2691");
         setForeground(iconColor);
     }
     
     public void cliqueSouris(MouseEvent e){
-        //System.out.println("On a clique sur la case !");
-        int x;
-        int y;
-        
         env.cliqueSouris(largeur,longueur,e.getButton() == MouseEvent.BUTTON1);
     }
     
@@ -208,6 +195,5 @@ public class CaseVue extends JPanel{
     {
         setBackground(new Color(0x121212));
         removeMouseListener(m);
-        System.out.println("destroy");
     }
 }
