@@ -243,7 +243,7 @@ public class FenetreP extends JFrame implements Observer {
             {
                 Case temp = env.tabCases[i][j];
                     
-                CaseVue c = new CaseVue(i, j, env, this);
+                CaseVue c = new CaseVue(i, j, env, this, 1, true);
                 c.setBorder(blackline);
                 pan.add(c);
                 tabCasesVue[i][j]=c;

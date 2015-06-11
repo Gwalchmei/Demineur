@@ -7,24 +7,39 @@ package demineur;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Path2D;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
  *
  * @author gauvain
  */
-public class CaseVue extends JLabel{
+public class CaseVue extends JPanel{
     /* indice correspond à l'indice de la CaseVue dans le tableau de la fenetre, largeur correspond à la largeur du tableau de l'environnement */
     private int largeur;
     private int longueur;
     private Environnement env;
     private FenetreP vue;
     protected MouseAdapter m;
+    protected JLabel text;
+    protected boolean sens = true;
     
+    private static final Color BG = Color.blue;
+    private static final Color BORDER = Color.red;
+    
+    private Path2D trianglePath = new Path2D.Double();
+    
+    private int SQUARE = 0;
+    private int TRIANGLE = 1;
+    private int type = SQUARE;
     
     @Override
     public Dimension getPreferredSize() {
@@ -40,9 +55,34 @@ public class CaseVue extends JLabel{
     public Dimension getMaximumSize() {
         return new Dimension(20, 20);
     }
+//    
+//    @Override
+//    public int getX() {
+//        if(type == SQUARE) {
+//            return super.getX();
+//        } else {
+//            return sens ? super.getX()/2 : super.getX();
+//        }
+//    }
+
+   @Override
+   protected void paintComponent(Graphics g) {
+      super.paintComponent(g);
+      if(type == TRIANGLE) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.GREEN);
+
+        // to smooth out the jaggies
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+              RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.fill(trianglePath);  // fill my triangle
+      }
+   }
     
-    public CaseVue(int _largeur, int _longueur, Environnement _env, FenetreP _vue) {
+    public CaseVue(int _largeur, int _longueur, Environnement _env, FenetreP _vue, int _type, boolean _sens) {
         super();
+        
+        text = new JLabel();
         
         defaultView(false);
         
@@ -50,6 +90,8 @@ public class CaseVue extends JLabel{
         longueur = _longueur;
         env = _env;
         vue = _vue;
+        type = _type;
+        sens = _sens;
         
         m = new MouseAdapter () {
             @Override
@@ -73,18 +115,29 @@ public class CaseVue extends JLabel{
         addMouseListener(m);
         setOpaque(true);
         
+        this.add(text);
         
+        Dimension dim = this.getPreferredSize();
+        double W = dim.width;
+        double H = dim.height;
+        double firstX = 0;
+        double firstY = 0;
+
+        trianglePath.moveTo(firstX, firstY);
+        trianglePath.lineTo(W, firstY);
+        trianglePath.lineTo(W / 2.0, H);
+        trianglePath.closePath();
     }
     
     public final void defaultView(boolean s){
         Color bgColor = new Color(0x5a5a5a);
         setBackground(bgColor);
-        setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
-        setHorizontalAlignment(SwingConstants.CENTER);
+        text.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 16));
+        text.setHorizontalAlignment(SwingConstants.CENTER);
         if(s) {
-            setText("U");
+            text.setText("U");
         } else {
-            setText("D");
+            text.setText("D");
         }
         //setText(" ");
     }
@@ -93,13 +146,13 @@ public class CaseVue extends JLabel{
         Color bgColor = new Color(0xF3F3F3);
         if (c.getType() == Case.WALL) {
             bgColor = new Color(0xFF0000);
-            setText(" ");
+            text.setText(" ");
         }
         Color darkBlue = new Color(0x0C165C);
         Color brown = new Color(0x5C380D);
         setBackground(bgColor);
         if (c.getNbMined() != 0) {
-            setText(Integer.toString(c.getNbMined()));
+            text.setText(Integer.toString(c.getNbMined()));
             switch(c.getNbMined()) {
                 case 1: setForeground(Color.BLUE);
                         break;
@@ -123,14 +176,14 @@ public class CaseVue extends JLabel{
         }
         if (c.getMined()){
             Color iconColor = new Color(0xEE1700);
-            setText("\uD83D\uDCA3");
+            text.setText("\uD83D\uDCA3");
             setForeground(iconColor);
         }
     }
     
     public void flaggedView() {
         Color iconColor = new Color(0xEE1700);
-        setText("\u2691");
+        text.setText("\u2691");
         setForeground(iconColor);
     }
     
@@ -139,7 +192,7 @@ public class CaseVue extends JLabel{
         int x;
         int y;
         
-        env.cliqueSouris(largeur,longueur,e.getButton() == MouseEvent.BUTTON1 ? true : false);
+        env.cliqueSouris(largeur,longueur,e.getButton() == MouseEvent.BUTTON1);
     }
     
     public void coloriserMotif() {
