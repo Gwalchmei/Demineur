@@ -3,8 +3,6 @@
  * and open the template in the editor.
  */
 package demineur;
-import java.awt.event.MouseEvent;
-import java.lang.Math;
 
 /**
  *

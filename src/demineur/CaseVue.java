@@ -7,15 +7,15 @@ package demineur;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+//import java.awt.Graphics;
+//import java.awt.Graphics2D;
+//import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Path2D;
+//import java.awt.geom.Path2D;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+//import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
@@ -24,21 +24,21 @@ import javax.swing.SwingConstants;
  */
 public class CaseVue extends JLabel{
     /* indice correspond à l'indice de la CaseVue dans le tableau de la fenetre, largeur correspond à la largeur du tableau de l'environnement */
-    private int largeur;
-    private int longueur;
-    private Environnement env;
-    private FenetreP vue;
+    protected int largeur;
+    protected int longueur;
+    protected Environnement env;
+//    private FenetreP vue;
     protected MouseAdapter m;
     protected boolean sens = true;
     
-    private static final Color BG = Color.blue;
-    private static final Color BORDER = Color.red;
+//    private static final Color BG = Color.blue;
+//    private static final Color BORDER = Color.red;
     
-    private Path2D trianglePath = new Path2D.Double();
-    
-    private int SQUARE = 0;
-    private int TRIANGLE = 1;
-    private int type = SQUARE;
+//    private Path2D trianglePath = new Path2D.Double();
+//    
+//    private int SQUARE = 0;
+//    private int TRIANGLE = 1;
+//    private int type = SQUARE;
     
     @Override
     public Dimension getPreferredSize() {
@@ -86,8 +86,8 @@ public class CaseVue extends JLabel{
         largeur = _largeur;
         longueur = _longueur;
         env = _env;
-        vue = _vue;
-        type = _type;
+//        vue = _vue;
+//        type = _type;
         sens = _sens;
         
         m = new MouseAdapter () {
@@ -113,16 +113,16 @@ public class CaseVue extends JLabel{
         setOpaque(true);
 
         
-        Dimension dim = this.getPreferredSize();
-        double W = dim.width;
-        double H = dim.height;
-        double firstX = 0;
-        double firstY = 0;
-
-        trianglePath.moveTo(firstX, firstY);
-        trianglePath.lineTo(W, firstY);
-        trianglePath.lineTo(W / 2.0, H);
-        trianglePath.closePath();
+//        Dimension dim = this.getPreferredSize();
+//        double W = dim.width;
+//        double H = dim.height;
+//        double firstX = 0;
+//        double firstY = 0;
+//
+//        trianglePath.moveTo(firstX, firstY);
+//        trianglePath.lineTo(W, firstY);
+//        trianglePath.lineTo(W / 2.0, H);
+//        trianglePath.closePath();
     }
     
     public final void defaultView(boolean s){

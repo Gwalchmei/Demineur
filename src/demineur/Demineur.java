@@ -24,17 +24,10 @@ public class Demineur {
         UIManager.setLookAndFeel(
             UIManager.getSystemLookAndFeelClassName());
         } 
-        catch (UnsupportedLookAndFeelException e) {
+        catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            System.exit(e.hashCode());
         }
-        catch (ClassNotFoundException e) {
-            // handle exception
-        }
-        catch (InstantiationException e) {
-            // handle exception
-        }
-        catch (IllegalAccessException e) {
-            // handle exception
-        }
+
         Environnement env = new Environnement();
         FenetreP fen = new FenetreP(env);
         fen.setVisible(true);

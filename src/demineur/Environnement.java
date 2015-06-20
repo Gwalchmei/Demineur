@@ -4,19 +4,13 @@
  */
 package demineur;
 
-import java.util.List;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static java.lang.Integer.max;
-// Pour la gestion XML
-import java.io.*;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.StringTokenizer;
+
 
 /**
  *
@@ -25,7 +19,6 @@ import java.util.StringTokenizer;
 public class Environnement extends Observable implements Runnable {
 
     protected Case[][] tabCases;
-    //protected boolean miseenpause;
     protected HashMap<Case, Point> map;
     protected boolean demarre;
     protected int vitesse;
@@ -205,18 +198,7 @@ public class Environnement extends Observable implements Runnable {
         voisins[7] = tabCases[x][y+1];    
         return voisins;
     }
-    
-    /*public void setPause(boolean p)
-    {
-        miseenpause = p;
-        
-        //System.out.println("dans setPause : miseenpause = " + miseenpause);
-    }
-    
-    public boolean getPause()
-    {
-        return miseenpause;
-    }*/
+
     public void effacer()
     {
         for (int i = 0; i<tabCases.length; i++)
@@ -228,16 +210,9 @@ public class Environnement extends Observable implements Runnable {
         }
     }
     
-    /*synchronized public void setActif()
-    {
-        miseenpause = false;
-        notifyAll();
-    }*/
-    
     synchronized public void demarrer()
     {
         demarre = true;
-        //miseenpause = false;
         notifyAll();
     }
     
@@ -262,18 +237,6 @@ public class Environnement extends Observable implements Runnable {
                 timer++;
             }
             
-            /*if(miseenpause){
-                synchronized(this){
-                    try {
-                        wait();
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Environnement.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            } else {
-                timer++;
-            }*/
-            
             try {
                 Thread.currentThread().sleep(vitesse);
             } catch (InterruptedException ex) {
@@ -281,16 +244,15 @@ public class Environnement extends Observable implements Runnable {
             }
             
             if (nbOpened+totalMine == largeur*longueur || lost) {
-                this.gameOver(!lost);
+                this.gameOver();
                 initialisation(difficulte, mode);
             }
-            //System.out.println("Je me réveille et je notifie les mises à jours");
             setChanged();
             notifyObservers();
         }
     }
     
-    public void gameOver(boolean flag) {
+    public void gameOver() {
         gameOver = true;
         setChanged();
         notifyObservers();
@@ -306,7 +268,6 @@ public class Environnement extends Observable implements Runnable {
     synchronized public void addOpened()
     {
         nbOpened++;
-        //System.out.println((nbOpened+totalMine)+"/"+(largeur*longueur));
     }
     
     public int getNbFlagged()
@@ -354,4 +315,3 @@ public class Environnement extends Observable implements Runnable {
         }
     }
 }
-

@@ -10,8 +10,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -67,16 +65,6 @@ public class FenetreP extends JFrame implements Observer {
     {
         return longueur;
     }
-    
-    public void lancerLaPartie()
-    {
-        env.initialisation(env.getDifficulte(), env.getMode());
-    }
-
-    public void effacer()
-    {
-        env.effacer();
-    }
 
     public void build()
     {
@@ -90,7 +78,7 @@ public class FenetreP extends JFrame implements Observer {
             @Override
             public void mousePressed(MouseEvent arg0) {
                 super.mouseClicked(arg0);
-                lancerLaPartie();
+                env.initialisation(env.getDifficulte(), env.getMode());
             }
         });
         
@@ -191,7 +179,7 @@ public class FenetreP extends JFrame implements Observer {
             @Override
             public void mousePressed(MouseEvent arg0) {
                 super.mouseClicked(arg0);
-                lancerLaPartie();
+                env.initialisation(env.getDifficulte(), env.getMode());
             }
         });
         
@@ -236,15 +224,6 @@ public class FenetreP extends JFrame implements Observer {
         pan = new JPanel (new GridLayout(largeur,longueur));
         Color borderColor = new Color(0x393638);
         Border blackline = BorderFactory.createLineBorder(borderColor, 1);
-        
-        /*for(int i = 0; i<(longueur*largeur); i++)
-        {
-            CaseVue c = new CaseVue(i, largeur, env, this);
-            c.setBorder(blackline);
-            
-            pan.add(c);
-            tabCasesVue[i]=c;
-        }*/
         
         for (int i= 0; i<largeur; i++)
         {
@@ -352,6 +331,4 @@ public class FenetreP extends JFrame implements Observer {
     }
     
     
-}
-
-/* Triangle définit en tant que JPanel redefinir getX getY et clique*/
+}/* Triangle définit en tant que JPanel redefinir getX getY et clique*/
