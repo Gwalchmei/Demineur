@@ -94,19 +94,20 @@ public class CaseVue extends JLabel{
             @Override
             public void mouseClicked(MouseEvent arg0) {
                 super.mouseClicked(arg0);
-                cliqueSouris(arg0);
+                env.cliqueSouris(largeur,longueur,arg0.getButton() == MouseEvent.BUTTON1);
             }
             
             @Override
             public void mouseEntered(MouseEvent arg0) {
                 super.mouseEntered(arg0);
-                coloriserMotif();
+                setBorder(BorderFactory.createLineBorder(Color.red));    
             }
             
             @Override
             public void mouseExited(MouseEvent arg0) {
                 super.mouseExited(arg0);
-                effacerMotif();
+                Color borderColor = new Color(0x393638);
+                setBorder(BorderFactory.createLineBorder(borderColor));
             }
         };
         addMouseListener(m);
@@ -176,19 +177,6 @@ public class CaseVue extends JLabel{
         Color iconColor = new Color(0xEE1700);
         setText("\u2691");
         setForeground(iconColor);
-    }
-    
-    public void cliqueSouris(MouseEvent e){
-        env.cliqueSouris(largeur,longueur,e.getButton() == MouseEvent.BUTTON1);
-    }
-    
-    public void coloriserMotif() {
-        setBorder(BorderFactory.createLineBorder(Color.red));       
-    }
-    
-    public void effacerMotif() {
-        Color borderColor = new Color(0x393638);
-        setBorder(BorderFactory.createLineBorder(borderColor));
     }
     
     public void destroy()
